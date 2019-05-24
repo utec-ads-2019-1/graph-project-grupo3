@@ -3,17 +3,27 @@
 
 #include "node.h"
 
-template <typename G>
+template <typename E,typename V>
 class Edge {
     public:
-        typedef typename G::E E;
-        typedef typename G::node node;
+      typedef Node<V> node;
+      node* nodes[2];
+      Edge(){}
+      Edge(E valueEdge, node* node1,node* node2){
+        nodes[0]=node1;
+        nodes[1]=node2;
+        data=valueEdge;
+      }
 
-        node* nodes[2];
+      E getData(){ return data;}
+      node** getNodes(){ return nodes;}
+
+      bool operator<(const Edge &other){
+        return other.data<this->data;
+      }
 
     private:
         E data;
-        bool dir;
 };
 
 #endif
