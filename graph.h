@@ -31,6 +31,14 @@ class Graph {
 
         Graph(){}
         Graph(bool dirg):dir(dirg){}
+        ~Graph(){
+          while(edges.empty()){
+            delete edges.back();
+            edges.pop_back();
+          }
+          for(int i=0;i<size;i++)
+            delete nodes[i];
+        }
 
         void insertNode(GV value,double x,double y){
           node *n=new node(value,x,y);
@@ -81,6 +89,7 @@ class Graph {
         EdgeSeq edges;
         dictNode dict;
         dictEdges dictE;
+        int size;
         NodeIte ni;
         EdgeIte ei;
         bool dir;
@@ -90,7 +99,7 @@ template <typename GV,typename GE>
 void Graph<GV,GE>::readFile(string fileName){
   fstream f(fileName);
   string line;
-  int rows,i,weight;
+  int i;
   GV valueNode1,valueNode2;
   GE valueEdge;
   double pos1,pos2;
@@ -98,9 +107,9 @@ void Graph<GV,GE>::readFile(string fileName){
 
     getline(f,line);
     string::size_type cs;
-    rows=stoi(line,&cs);
+    size=stoi(line,&cs);
 
-    for(i=0;i<rows;i++){
+    for(i=0;i<size;i++){
       getline(f,line);
       stringstream s(line);
       s>>valueNode1>>pos1>>pos2;

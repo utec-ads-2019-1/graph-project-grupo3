@@ -14,6 +14,7 @@ class Edge {
         nodes[1]=node2;
         data=valueEdge;
       }
+      ~Edge(){ delete this;}
 
       E getData(){ return data;}
       node** getNodes(){ return nodes;}

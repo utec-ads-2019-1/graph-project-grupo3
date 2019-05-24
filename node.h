@@ -20,6 +20,7 @@ class Node {
           this->x=x;
           this->y=y;
         }
+        ~Node(){delete this;}
 
         NodeSeq getNodesAdj(){
           return nodesAdj;
