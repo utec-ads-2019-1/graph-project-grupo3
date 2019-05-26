@@ -70,23 +70,6 @@ public:
     }
     float segments = 25;
     float radius = 1.0;
-    float left_angle = 245;
-    float right_angle = 115;
-    float branch_length = 12 - level * 2.5;
-    float angle_change = 20;
-
-    drawCircle(segments, radius, x1, y1);
-
-    float angle = left_angle - level * angle_change;
-    double radian = angle * 3.14 / 180;
-    float m = (double)tan((double)radian);
-    float x2 = x1 + branch_length * sin((double)radian);
-    float y2 = y1 + branch_length * cos((double)radian);
-    drawNode(node1, node2, x2, y2, level + 1);
-    draw_line(x1, y1, x2, y2);
-
-    float x3 = (x1 + x2) / 2;
-    float y3 = (y1 + y2) / 2;
   }
   void print()
   {
