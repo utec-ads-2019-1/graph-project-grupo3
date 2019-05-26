@@ -62,15 +62,9 @@ public:
       }
     }
   }
-  void drawNode(GV node1, GV node2, float x1, float y1, int level)
-  {
-    if (node1 == NULL || nod2 == NULL)
-    {
-      return;
-    }
-    float segments = 25;
-    float radius = 1.0;
-  }
+
+
+
   void print()
   {
     ni = nodes.begin();
@@ -132,6 +126,6 @@ void Graph<GV, GE>::readFile(string fileName)
       insertEdge(valueEdge, valueNode1, valueNode2);
     }
   }
-}
+};
 
 #endif
