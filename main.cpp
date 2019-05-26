@@ -18,6 +18,7 @@ const float PI = 3.141592653;
 void drawCircle(float segments, float radius, float sx, float sy);
 void draw_line(float x1, float y1, float x2, float y2);
 void draw_text(char *text, float x, float y);
+void reshape(int w, int h);
 void Draw();
 
 int main(int argc, char **argv)
@@ -54,20 +55,8 @@ void Draw()
   glLoadIdentity();
   glTranslatef(0, 10, -30);
   glColor3f(1, 1, 1);
-  drawCircle(25, 1.0, 0.0, 0.0);
-  draw_text("200", 0.0, 0.0);
-  draw_line(0.0, 0.0, 1.0, 1.0);
+  //drawNode(node1,node2, 0, 0, 0);
   glutSwapBuffers();
-}
-
-void draw_text(char *text, float x, float y)
-{
-  GLvoid *font_style = GLUT_BITMAP_TIMES_ROMAN_24;
-  glRasterPos3f(x, y, 0);
-  for (int i = 0; text[i] != '\0'; i++)
-  {
-    glutBitmapCharacter(font_style, text[i]);
-  }
 }
 
 void drawCircle(float segments, float radius, float sx, float sy)
@@ -114,4 +103,13 @@ void draw_line(float x1, float y1, float x2, float y2)
   glVertex2f(x1, y1);
   glVertex2f(x2, y2);
   glEnd();
+}
+
+void reshape(int w, int h)
+{
+  glViewport(0, 0, (GLsizei)w, (GLsizei)h);
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  gluPerspective(60, (GLfloat)w / (GLfloat)h, 0.1, 100.0);
+  glMatrixMode(GL_MODELVIEW);
 }
