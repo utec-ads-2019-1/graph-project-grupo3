@@ -9,6 +9,7 @@
 #include<string>
 #include<unordered_map>
 #include<map>
+#include <queue>
 
 #include "node.h"
 #include "edge.h"
@@ -96,6 +97,22 @@ class Graph {
         void density(float cuota){
             if (calcDensity(dir)<cuota) cout << "Grafo Disperso"<<endl;
             else cout <<"Grafo Denso" << endl;
+        }
+
+        void type(){
+            if (dir) cout << "Grafo dirigido" << endl;
+            else cout << "Grafo no dirigido" << endl;
+
+        }
+
+
+        int degre(){}
+            //todo
+        bool isConexo(){
+            //todo
+        }
+        bool isBipartite(){
+            //todo
         }
 
 
