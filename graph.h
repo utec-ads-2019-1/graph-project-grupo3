@@ -13,7 +13,7 @@
 
 #include "node.h"
 #include "edge.h"
-
+#include "dsjset.h"
 
 using namespace std;
 
@@ -71,18 +71,19 @@ class Graph {
         }
         void print(){
           ni=nodes.begin();
-          cout<<"Imprimiendo nodes"<<endl;
+          cout<<"Imprimiendo nodes:\n"<<endl;
           while(ni!=nodes.end()){
-              cout<<(*ni)->getData()<<endl;
+              cout<<(*ni)->getData()<<"\t";
             ni++;
 
           }
-          cout<<"Imprimiendo edges"<<endl;
+          cout << endl;
+          cout<<"\nImprimiendo edges:\n"<<endl;
           ei=edges.begin();
           while(ei!=edges.end()){
-            cout<<(*ei)->getData()<<" - Vertices :: ";
             node** arr=(*ei)->getNodes();
-            cout<<" v1::"<<arr[0]->getData()<<" / v2::"<<arr[1]->getData()<<endl;
+            cout << "Vertices( " << arr[0]->getData()<<", "<<arr[1]->getData() << ")";
+            cout << "\t|\tPeso: "<< (*ei)->getData() << endl;
             ei++;
           }
         }
@@ -115,6 +116,50 @@ class Graph {
             //todo
         }
 
+        EdgeSeq kruskal() {
+            EdgeSeq krusk;
+            auto mySet = new DsjSet<GE>;
+            for (ni = nodes.begin(); ni!=nodes.end(); ni++){
+                auto name = (*ni)->getData();
+                mySet->makeSet(name, *ni);
+            }
+
+                edges.sort([](edge* first, edge* second){
+                    int wgtFirst = first->getData();
+                    int wgtSecond = second->getData();
+                    return wgtFirst < wgtSecond;
+                });
+
+
+                int tWeight = 0, i=0;
+                ei = edges.begin();
+
+                for (int i = 0; i < edges.size(); i++){
+                    auto first = (*ei)->nodes[0];
+                    auto second = (*ei)->nodes[1];
+                    auto weight = (*ei)->getData();
+
+                    if( mySet->findSet(first->getData()) != mySet->findSet(second->getData()) ) {
+                        mySet->unionS(first->getData(), second->getData());
+                        tWeight += weight;
+                        krusk.push_back(*ei);
+                    }
+                    ei++;
+                }
+                return krusk;
+
+        }
+        void printKruskal(){
+            auto result = kruskal();
+            cout<<"\nImprimiendo Kruskal:\n"<<endl;
+            ei=result.begin();
+            while(ei!=result.end()){
+                node** arr=(*ei)->getNodes();
+                cout<<"Vértices( "<<arr[0]->getData()<<", "<<arr[1]->getData()<<")"<<endl;
+                ei++;
+            }
+
+        }
 
     private:
         NodeSeq nodes;

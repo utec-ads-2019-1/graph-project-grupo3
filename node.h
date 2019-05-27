@@ -7,6 +7,8 @@
 using namespace std;
 
 template <typename V>
+class DsjSet;
+template <typename V>
 class Node {
     public:
         //typedef typename G::edge edge;
@@ -19,6 +21,8 @@ class Node {
           this->data=data;
           this->x=x;
           this->y=y;
+          rank = 0;
+          parent = this;
         }
         ~Node(){delete this;}
 
@@ -36,7 +40,12 @@ class Node {
         Node (V value){
             data = value;
             x = y = 0;
+            rank = 0;
+            parent = this;
         }
+        template <class>
+        friend class DsjSet;
+
 
 
     private:
@@ -45,6 +54,10 @@ class Node {
         dictNodeAdj dict;
         double x;
         double y;
+
+protected:
+        Node<V>* parent;
+        int rank;
 };
 
 #endif
