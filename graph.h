@@ -31,11 +31,12 @@ class Graph {
 
         Graph(){}
         Graph(bool dirg):dir(dirg){}
-        ~Graph(){
-          while(edges.empty()){
-            delete edges.back();
+
+        ~Graph(){ //Revisar destructor y read file
+          /*while(edges.empty()){
+            //delete edges.back();
             edges.pop_back();
-          }
+          }*/
           for(int i=0;i<size;i++)
             delete nodes[i];
         }
@@ -71,8 +72,9 @@ class Graph {
           ni=nodes.begin();
           cout<<"Imprimiendo nodes"<<endl;
           while(ni!=nodes.end()){
-            cout<<(*ni)->getData()<<endl;
+              cout<<(*ni)->getData()<<endl;
             ni++;
+
           }
           cout<<"Imprimiendo edges"<<endl;
           ei=edges.begin();
@@ -83,6 +85,19 @@ class Graph {
             ei++;
           }
         }
+
+        float calcDensity(bool dir){
+            if (dir)
+                return (edges.size()*2)/(nodes.size()*(nodes.size()-1));
+            else
+                return (edges.size())/(nodes.size()*(nodes.size()-1));
+        }
+
+        void density(float cuota){
+            if (calcDensity(dir)<cuota) cout << "Grafo Disperso"<<endl;
+            else cout <<"Grafo Denso" << endl;
+        }
+
 
     private:
         NodeSeq nodes;

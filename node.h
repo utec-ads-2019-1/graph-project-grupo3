@@ -33,6 +33,12 @@ class Node {
         }
         V getData(){ return data;};
 
+        Node (V value){
+            data = value;
+            x = y = 0;
+        }
+
+
     private:
         V data;
         NodeSeq nodesAdj;
