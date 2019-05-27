@@ -67,7 +67,7 @@ void drawNode(Node<int> *value, float x1, float y1, int level)
   float m = (double)tan((double)radian);
   float x2 = x1 + branch_length * sin((double)radian);
   float y2 = y1 + branch_length * cos((double)radian);
-  drawNode(value->getNodesAdj, x2, y2, level + 1);
+  drawNode(value, x2, y2, level + 1);
 
   float x3 = (x1 + x2) / 2;
   float y3 = (y1 + y2) / 2;

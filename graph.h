@@ -28,12 +28,13 @@ public:
   typedef map<pair<GV, GV>, bool> dictEdges;
   typedef typename NodeSeq::iterator NodeIte;
   typedef typename EdgeSeq::iterator EdgeIte;
-
+  int count = 0;
   Graph() {}
   Graph(bool dirg) : dir(dirg) {}
 
   void insertNode(GV value, double x, double y)
   {
+    count++;
     node *n = new node(value, x, y);
     nodes.push_back(n);
     dict[value] = n;
@@ -63,8 +64,35 @@ public:
     }
   }
 
+  Graph BFS(int begining)
+  {
 
+    bool *isVisited = new bool[count];
+    for (int i = 0; i < count; i++)
+    {
+      isVisited[i] = false;
+    }
+    list<int> isVisitedQueue;
+    isVisited[begining] = true;
+    isVisitedQueue.push_back(begining);
 
+    list<int>::iterator iter;
+    while (!isVisitedQueue.empty())
+    {
+      begining = isVisitedQueue.front();
+      return begining;
+      isVisitedQueue.pop_front();
+
+      for (iter = NodeSeq[begining].begin(); iter != NodeSeq[begining].end(); ++iter)
+      {
+        if (!isVisited[*iter])
+        {
+          isVisited[*iter] = true;
+          isVisitedQueue.push_back(*iter);
+        }
+      }
+    }
+  }
   void print()
   {
     ni = nodes.begin();
