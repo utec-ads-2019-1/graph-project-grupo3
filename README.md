@@ -2,4 +2,4 @@
 
 run with
 
-_g++ -framework OpenGL -framework GLUT main.cpp _
+*g++ -framework OpenGL -framework GLUT main.cpp *
