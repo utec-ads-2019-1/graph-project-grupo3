@@ -13,10 +13,7 @@ public:
     //typedef typename G::edge edge;
     typedef vector<Node *> NodeSeq;
     typedef unordered_map<Node *, bool> dictNodeAdj;
-    //typedef typename V::EdgeSeq EdgeSeq;
-
     //EdgeSeq edges;
-
     Node() {}
     Node(V data, double x, double y)
     {

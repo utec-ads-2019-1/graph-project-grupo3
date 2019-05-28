@@ -76,8 +76,12 @@ public:
             bfsGraph->insertNode((*ni)->getData(), (*ni)->getX(), (*ni)->getY());
             count++;
         }
-        bool *frequented = new bool[count];
+        bool *frequented = new bool[count], desfrequented;
 
+        for (int i = 0; i < count; i++)
+        {
+            frequented[i] = false;
+        }
         queue<node *> container;
         auto currNode = getNode(begining);
         auto prevNode = currNode;
@@ -90,7 +94,6 @@ public:
             container.pop();
             for (auto it = 0; it != frequented[count]; it++)
             {
-                frequented[it] = false;
                 if (!frequented[it])
                 {
                     frequented[it] = true;
@@ -100,7 +103,7 @@ public:
                     }
                     visited.push_back(currNode);
 
-                    for (ei = edges.begin(); ei != edges.end(); ei++)
+                    for (ei = currNode->edges.begin(); ei != currNode->edges.end(); ei++)
                     {
                         container.push((*ei)->nodes[1]);
                     }

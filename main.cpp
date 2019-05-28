@@ -28,7 +28,7 @@ int main(int argc, char **argv)
     Graph<int, int> g(false);
     string file;
     cout << "Ingresa nombre de file::";
-    cin >> file;
+    file = "input.txt";
     g.readFile(file);
     g.print();
     auto bfs1 = g.BFS(2);
