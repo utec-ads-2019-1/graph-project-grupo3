@@ -102,15 +102,61 @@ public:
                         bfsGraph->insertEdge(NULL, prevNode->getData(), currNode->getData());
                     }
                     visited.push_back(currNode);
-
-                    for (ei = currNode->edges.begin(); ei != currNode->edges.end(); ei++)
+                    /*
+                    for (ei = currNode->nodes.begin(); ei != currNode->nodes.end(); ei++)
                     {
                         container.push((*ei)->nodes[1]);
-                    }
+                    }*/
                 }
             }
         }
-        return bfsGraph;
+        //return bfsGraph;
+    }
+
+    Graph *DFS(int begining)
+    {
+        int count = 0;
+        auto bfsGraph = new Graph;
+        for (ni = nodes.begin(); ni != nodes.end(); ni++)
+        {
+            bfsGraph->insertNode((*ni)->getData(), (*ni)->getX(), (*ni)->getY());
+            count++;
+        }
+        bool *frequented = new bool[count], desfrequented;
+
+        for (int i = 0; i < count; i++)
+        {
+            frequented[i] = false;
+        }
+        stack<node *> container;
+        auto currNode = getNode(begining);
+        auto prevNode = currNode;
+        list<node *> visited;
+        container.push(currNode);
+        while (!container.empty())
+        {
+            prevNode = currNode;
+            currNode = container.top();
+            container.pop();
+            for (auto it = 0; it != frequented[count]; it++)
+            {
+                if (!frequented[it])
+                {
+                    frequented[it] = true;
+                    if (prevNode != currNode)
+                    {
+                        bfsGraph->insertEdge(NULL, prevNode->getData(), currNode->getData());
+                    }
+                    visited.push_back(currNode);
+                    /*
+                    for (ei = currNode->nodes.begin(); ei != currNode->nodes.end(); ei++)
+                    {
+                        container.push((*ei)->nodes[1]);
+                    }*/
+                }
+            }
+        }
+        //return bfsGraph;
     }
     void print()
     {
@@ -140,21 +186,6 @@ private:
     NodeIte ni;
     EdgeIte ei;
     bool dir;
-
-    node *getNode(int Node)
-    {
-        if (count > 0)
-        {
-            node *tempNode = nodes.front();
-            for (ni = nodes.begin(); ni != nodes.end(); ni++)
-            {
-                if ((*ni)->getData() == Node)
-                    return *ni;
-            }
-            return NULL;
-        }
-        return NULL;
-    }
 };
 
 template <typename GV, typename GE>

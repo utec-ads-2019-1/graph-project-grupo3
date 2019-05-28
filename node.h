@@ -22,6 +22,7 @@ public:
         this->y = y;
     }
 
+
     NodeSeq getNodesAdj()
     {
         return nodesAdj;

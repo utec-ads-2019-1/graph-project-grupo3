@@ -60,7 +60,7 @@ void Draw()
     glLoadIdentity();
     glTranslatef(0, 10, -30);
     glColor3f(1, 1, 1);
-    // drawNode(Node<V>::NodeSeq, 0, 0, 0);
+    //drawNode(, 0, 0, 0);
     glutSwapBuffers();
 }
 
