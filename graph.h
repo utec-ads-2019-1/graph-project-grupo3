@@ -29,8 +29,7 @@ class Graph {
         typedef typename NodeSeq::iterator NodeIte;
         typedef typename EdgeSeq::iterator EdgeIte;
 
-        Graph(){}
-        Graph(bool dirg):dir(dirg){}
+        Graph(bool dirg,bool pondg):dir(dirg),pond(pondg){}
         ~Graph(){
           while(edges.empty()){
             delete edges.back();
@@ -40,15 +39,57 @@ class Graph {
             delete nodes[i];
         }
 
-        void insertNode(GV value,double x,double y){
-          node *n=new node(value,x,y);
-          nodes.push_back(n);
-          dict[value]=n;
+        bool insertNode(GV value,double x,double y){
+          if(!dict[value]){
+            node *n=new node(value,x,y);
+            nodes.push_back(n);
+            dict[value]=n;
+            return true;
+          }
+          return false;
         }
-        void insertEdge(GE edgeV,GV node1,GV node2){
+        bool removeNode(GV value){
+          ni=nodes.begin();
+          while(ni!=nodes.end()){
+            if(ni->data==value){
+              nodes.erase(ni,ni+1);
+              delete dict[value];
+              dict[value]=nullptr;
+              return true;
+            }
+            ni++;
+          }
+          return false;
+        }
+        bool insertEdge(GV node1,GV node2){
+          if(pond)
+            throw printf("Debe ingresar un peso para la arista\n");
+
           if(!dictE[make_pair(node1,node2)]){
 
-            edge *e=new edge(edgeV,dict[node1],dict[node2]);
+            edge *e=new edge(dict[node1],dict[node2]);
+
+
+            edges.push_back(e);
+            dictE[make_pair(node1,node2)]=1;
+
+            node* n1=dict[node1];
+            node* n2=dict[node2];
+            n1->insertNodeAdj(n2);
+            if(!dir){
+              dictE[make_pair(node2,node1)]=1;
+              n2->insertNodeAdj(n1);
+            }
+            return true;
+          }
+          return false;
+        }
+        bool insertEdge(GE edgeV,GV node1,GV node2){
+          if(!pond)
+            throw printf("No debe ingresar un peso para la arista\n");
+          if(!dictE[make_pair(node1,node2)]){
+
+            edge *e=new edge(dict[node1],dict[node2]);
             ei=edges.begin();
 
             while(ei!=edges.end() && (*ei)->getData()>edgeV)
@@ -64,8 +105,47 @@ class Graph {
               dictE[make_pair(node2,node1)]=1;
               n2->insertNodeAdj(n1);
             }
-
+            return true;
           }
+          return false;
+        }
+        bool removeEdge(GV node1,GV node2){
+          ei=edges.begin();
+          if(!dictE[make_pair(node1,node2)]|| (!dir && dictE[make_pair(node2,node1)]))
+              return false;
+          while(ei!=edges.end()){
+            if(ei->nodes[0]->getData()==node1 && ei->nodes[1]->getData()==node2){
+
+              edge* edgetmp=*ei;
+              node* n1=ei->nodes[0];
+              node* n2=ei->nodes[1];
+              n1->removeNodeAdj(n2);
+
+              if(!dir){
+                n2->removeNodeAdj(n1);
+                dictE[make_pair(node2,node1)]=false;
+              }
+
+              edges.remove(*ei);
+              delete edgetmp;
+              dictE[make_pair(node1,node2)]=false;
+              return true;
+            }
+            if(!dir && ei->nodes[1]->getData()==node1 && ei->nodes[0]->getData()==node2){
+              edge* edgetmp=*ei;
+              node* n1=ei->nodes[1];
+              node* n2=ei->nodes[0];
+              n1->removeNodeAdj(n2);
+              n2->removeNodeAdj(n1);
+              edges.remove(*ei);
+              delete edgetmp;
+              dictE[make_pair(node1,node2)]=false;
+              dictE[make_pair(node2,node1)]=false;
+              return true;
+            }
+            ei++;
+          }
+          return false;
         }
         void print(){
           ni=nodes.begin();
@@ -84,6 +164,12 @@ class Graph {
           }
         }
 
+        node* getNode(GV value){
+          if(dict[value])
+            return dict[value];
+          return nullptr;
+        }
+
     private:
         NodeSeq nodes;
         EdgeSeq edges;
@@ -93,6 +179,7 @@ class Graph {
         NodeIte ni;
         EdgeIte ei;
         bool dir;
+        bool pond;
 };
 
 template <typename GV,typename GE>

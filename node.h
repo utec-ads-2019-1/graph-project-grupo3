@@ -12,6 +12,7 @@ class Node {
         //typedef typename G::edge edge;
         typedef vector<Node*> NodeSeq;
         typedef unordered_map<Node*,bool> dictNodeAdj;
+        typedef typename NodeSeq::iterator NodeIte;
 
         //EdgeSeq edges;
         Node(){}
@@ -26,10 +27,16 @@ class Node {
           return nodesAdj;
         }
         void insertNodeAdj(Node* nodeAdj){
-          //if(!dict.count(nodeAdj)){
-           // dict[nodeAdj]=1;
             nodesAdj.push_back(nodeAdj);
-         // }
+        }
+        void removeNodeAdj(Node *nodeAdj){
+          ni=nodesAdj.begin();
+          while(ni!=nodesAdj.end()){
+            if((*ni)==nodeAdj){
+              nodesAdj.erase(ni,ni+1);
+            }
+            ni++;
+          }
         }
         V getData(){ return data;};
 
@@ -37,6 +44,7 @@ class Node {
         V data;
         NodeSeq nodesAdj;
         dictNodeAdj dict;
+        NodeIte ni;
         double x;
         double y;
 };
