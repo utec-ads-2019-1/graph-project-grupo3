@@ -31,6 +31,8 @@ int main(int argc, char **argv)
     cin >> file;
     g.readFile(file);
     g.print();
+    auto bfs1 = g.BFS(2);
+    bfs1->print();
     //Read<int,int> read(file);
     //g=read.getGraph();
 
@@ -58,7 +60,7 @@ void Draw()
     glLoadIdentity();
     glTranslatef(0, 10, -30);
     glColor3f(1, 1, 1);
-    drawNode(Node<V>::NodeSeq, 0, 0, 0);
+    // drawNode(Node<V>::NodeSeq, 0, 0, 0);
     glutSwapBuffers();
 }
 

@@ -12,6 +12,7 @@
         "array": "cpp",
         "utility": "cpp",
         "list": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "unordered_map": "cpp"
     }
 }
