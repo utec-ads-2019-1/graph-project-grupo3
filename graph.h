@@ -24,10 +24,12 @@ public:
     typedef Edge<GE, GV> edge;
     typedef vector<node *> NodeSeq;
     typedef list<edge *> EdgeSeq;
+    typedef typename GV int N;
     typedef unordered_map<GV, node *> dictNode;
     typedef map<pair<GV, GV>, bool> dictEdges;
     typedef typename NodeSeq::iterator NodeIte;
     typedef typename EdgeSeq::iterator EdgeIte;
+    int count = 0;
     Graph() {}
     Graph(bool dirg) : dir(dirg) {}
 
@@ -36,6 +38,7 @@ public:
         node *n = new node(value, x, y);
         nodes.push_back(n);
         dict[value] = n;
+        count++;
     }
     void insertEdge(GE edgeV, GV node1, GV node2)
     {
@@ -62,7 +65,7 @@ public:
         }
     }
 
-    Graph *BFS(int begining)
+    Graph *BFS(N begining)
     {
         int count = 0;
         auto bfsGraph = new Graph;
@@ -73,7 +76,7 @@ public:
         }
         cout << count << endl;
         bool *isVisited = new bool[count];
-        auto currentNode = getNodesAdj(begining);
+        auto currentNode = getNode(begining);
         auto prevNode = currentNode;
         list<node *> isVisitedQueue;
         for (int i = 0; i < count; i++)
@@ -130,6 +133,21 @@ private:
     NodeIte ni;
     EdgeIte ei;
     bool dir;
+
+    node *getNode(int Node)
+    {
+        if (count > 0)
+        {
+            node *tempNode = nodes.front();
+            for (ni = nodes.begin(); ni != nodes.end(); ni++)
+            {
+                if ((*ni)->getData() == Node)
+                    return *ni;
+            }
+            return NULL;
+        }
+        return NULL;
+    }
 };
 
 template <typename GV, typename GE>
