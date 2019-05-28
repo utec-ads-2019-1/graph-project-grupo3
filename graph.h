@@ -67,10 +67,10 @@ public:
         }
     }
 
-    Graph *BFS(int begining)
+    Graph *BFS(GV begining)
     {
         int count = 0;
-        auto bfsGraph = new Graph;
+        auto bfsGraph = new Graph(dir);
         for (ni = nodes.begin(); ni != nodes.end(); ni++)
         {
             bfsGraph->insertNode((*ni)->getData(), (*ni)->getX(), (*ni)->getY());
@@ -78,41 +78,37 @@ public:
         }
         bool *frequented = new bool[count], desfrequented;
 
-        for (int i = 0; i < count; i++)
-        {
-            frequented[i] = false;
-        }
+   
         queue<node *> container;
         auto currNode = getNode(begining);
         auto prevNode = currNode;
-        list<node *> visited;
+        int j = 0;
         container.push(currNode);
         while (!container.empty())
         {
+            desfrequented = false;
             prevNode = currNode;
             currNode = container.front();
             container.pop();
-            for (auto it = 0; it != frequented[count]; it++)
+            vector<node *> listAdjs = currNode->getNodesAdj();
+
+            for (auto i = listAdjs.begin(); i != listAdjs.end(); ++i)
             {
-                if (!frequented[it])
+
+                if (!desfrequented)
                 {
-                    frequented[it] = true;
+                    desfrequented = true;
                     if (prevNode != currNode)
                     {
                         bfsGraph->insertEdge(NULL, prevNode->getData(), currNode->getData());
                     }
-                    visited.push_back(currNode);
-                    /*
-                    for (ei = currNode->nodes.begin(); ei != currNode->nodes.end(); ei++)
-                    {
-                        container.push((*ei)->nodes[1]);
-                    }*/
+                    container.push(*i);
                 }
             }
         }
-        //return bfsGraph;
+        return bfsGraph;
     }
-
+    /*
     Graph *DFS(int begining)
     {
         int count = 0;
@@ -129,7 +125,7 @@ public:
             frequented[i] = false;
         }
         stack<node *> container;
-        auto currNode = getNode(begining);
+        auto currNode = getNodead(begining);
         auto prevNode = currNode;
         list<node *> visited;
         container.push(currNode);
@@ -148,16 +144,17 @@ public:
                         bfsGraph->insertEdge(NULL, prevNode->getData(), currNode->getData());
                     }
                     visited.push_back(currNode);
-                    /*
+                    
                     for (ei = currNode->nodes.begin(); ei != currNode->nodes.end(); ei++)
                     {
                         container.push((*ei)->nodes[1]);
-                    }*/
+                    }
                 }
             }
         }
         //return bfsGraph;
     }
+    */
     void print()
     {
         ni = nodes.begin();
@@ -176,6 +173,13 @@ public:
             cout << " v1::" << arr[0]->getData() << " / v2::" << arr[1]->getData() << endl;
             ei++;
         }
+    }
+
+    node *getNode(GV value)
+    {
+        if (dict[value])
+            return dict[value];
+        return nullptr;
     }
 
 private:
