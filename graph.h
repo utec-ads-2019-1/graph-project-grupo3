@@ -3,12 +3,14 @@
 
 #include <vector>
 #include <list>
+#include <stack>
+#include <queue>
+#include <map>
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>
 #include <unordered_map>
-#include <map>
 
 #include "node.h"
 #include "edge.h"
@@ -24,11 +26,11 @@ public:
     typedef Edge<GE, GV> edge;
     typedef vector<node *> NodeSeq;
     typedef list<edge *> EdgeSeq;
-    typedef typename GV int N;
     typedef unordered_map<GV, node *> dictNode;
     typedef map<pair<GV, GV>, bool> dictEdges;
     typedef typename NodeSeq::iterator NodeIte;
     typedef typename EdgeSeq::iterator EdgeIte;
+
     int count = 0;
     Graph() {}
     Graph(bool dirg) : dir(dirg) {}
@@ -65,7 +67,7 @@ public:
         }
     }
 
-    Graph *BFS(N begining)
+    Graph *BFS(int begining)
     {
         int count = 0;
         auto bfsGraph = new Graph;
@@ -74,32 +76,34 @@ public:
             bfsGraph->insertNode((*ni)->getData(), (*ni)->getX(), (*ni)->getY());
             count++;
         }
-        cout << count << endl;
-        bool *isVisited = new bool[count];
-        auto currentNode = getNode(begining);
-        auto prevNode = currentNode;
-        list<node *> isVisitedQueue;
-        for (int i = 0; i < count; i++)
-        {
-            isVisited[i] = false;
-        }
+        bool *frequented = new bool[count];
 
-        isVisited[begining] = true;
-        isVisitedQueue.push_back(begining);
-
-        while (!isVisitedQueue.empty())
+        queue<node *> container;
+        auto currNode = getNode(begining);
+        auto prevNode = currNode;
+        list<node *> visited;
+        container.push(currNode);
+        while (!container.empty())
         {
-            list<int>::iterator i;
-            prevNode = currentNode;
-            currentNode = isVisitedQueue.front();
-            isVisitedQueue.pop();
-            bfsGraph->insertEdge(prevNode->getData(), currentNode->getData());
-            for (i = currentNode->edges.begin(); i != currentNode->edges.end(); ++i)
+            prevNode = currNode;
+            currNode = container.front();
+            container.pop();
+            for (auto it = 0; it != frequented[count]; it++)
             {
-                if (!isVisited[*i])
+                frequented[it] = false;
+                if (!frequented[it])
                 {
-                    isVisited[*i] = true;
-                    isVisitedQueue.push_back(*i);
+                    frequented[it] = true;
+                    if (prevNode != currNode)
+                    {
+                        bfsGraph->insertEdge(NULL, prevNode->getData(), currNode->getData());
+                    }
+                    visited.push_back(currNode);
+
+                    for (ei = currNode->edges.begin(); ei != currNode->edges.end(); ei++)
+                    {
+                        container.push((*ei)->nodes[1]);
+                    }
                 }
             }
         }
