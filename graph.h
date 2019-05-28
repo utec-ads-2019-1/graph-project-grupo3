@@ -100,7 +100,7 @@ public:
                     }
                     visited.push_back(currNode);
 
-                    for (ei = currNode->edges.begin(); ei != currNode->edges.end(); ei++)
+                    for (ei = edges.begin(); ei != edges.end(); ei++)
                     {
                         container.push((*ei)->nodes[1]);
                     }
