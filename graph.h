@@ -77,8 +77,6 @@ public:
             count++;
         }
         bool *frequented = new bool[count], desfrequented;
-        list<node *> visited;
-
         queue<node *> container;
         auto currNode = getNode(begining);
         auto prevNode = currNode;
@@ -90,8 +88,7 @@ public:
             currNode = container.front();
             container.pop();
             vector<node *> listAdjs = currNode->getNodesAdj();
-
-            for (auto i = visited.begin(); i != visited.end(); ++i)
+            for (auto i = listAdjs.begin(); i != listAdjs.end(); ++i)
             {
                 if (*i == currNode)
                 {
@@ -108,9 +105,7 @@ public:
                 container.push(currNode);
                 for (auto i = listAdjs.begin(); i != listAdjs.end(); i++)
                 {
-                    
                       container.push(*i);
-                    
                 }
             }
         }
