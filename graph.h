@@ -127,7 +127,7 @@ public:
     Graph *BFS(GV begining)
     {
         int count = 0;
-        auto bfsGraph = new Graph(dir, pond);
+        auto bfsGraph = new Graph(dir);
         for (ni = nodes.begin(); ni != nodes.end(); ni++)
         {
             bfsGraph->insertNode((*ni)->getData(), (*ni)->getX(), (*ni)->getY());
@@ -151,6 +151,7 @@ public:
             ei = edges.begin();
             for (auto i = listAdjs.begin(); i != listAdjs.end() && ei != edges.end(); ++i, ++ei)
             {
+
                 if (!frequented[(*i)->getData() - 1])
                 {
                     bfsGraph->insertEdge((*ei)->getData(), currNode->getData(), (*i)->getData());
