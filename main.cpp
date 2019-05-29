@@ -35,21 +35,34 @@ int main() {
 
     g.print();
     g.density();
+    g.removeEdge(3,5);
+    cout << "paso"<<endl;
+    g.print();
 
-    auto nuevo = g.prim(0);
-    cout <<"**************************\n";
+
+g.density();
+
+
+
+
+
+
+    cout <<"\n**************************\n";
     cout <<"  Algoritmo de Prim " << endl;
     cout <<"**************************\n";
+
+    auto nuevo = g.prim(0);
     nuevo.print();
 
-    auto nuevo2 = g.kruskal();
-    cout <<"**************************\n";
+
+    cout <<"\n**************************\n";
     cout <<"   Algoritmo de Kruskal " << endl;
     cout <<"**************************\n";
+    auto nuevo2 = g.kruskal();
     nuevo2.print();
 
 
-
+/*
   cout<<"Ingresa nombre de file::";
   cin>>file;
   g.readFile(file);
@@ -62,6 +75,6 @@ int main() {
   //Read<int,int> read(file);
   //g=read.getGraph();
 
-
+*/
   return EXIT_SUCCESS;
 }

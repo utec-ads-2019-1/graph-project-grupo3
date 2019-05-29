@@ -69,7 +69,7 @@ class Graph {
         bool removeNode(GV value){
           ni=nodes.begin();
           while(ni!=nodes.end()){
-            if(ni->data==value){
+            if((*ni)->getData() ==value){
               nodes.erase(ni,ni+1);
               delete dict[value];
               dict[value]=nullptr;
@@ -388,12 +388,12 @@ class Graph {
         void density(){ //Controlar que esté en el rango de 0<a<1
             double cuota;
             do{
-            cout << "Ingrese una cuota para evaluar la densidad: "; cin >> cuota;
+            cout << "\nIngrese una cuota para evaluar la densidad: "; cin >> cuota;
             }while(cuota <=0 || cuota >=1);
-            cout <<"\n=============================================";
+            cout <<"\n=========================================================";
             if (calcDensity(dir)<cuota) cout << "\nDensidad: "<<calcDensity(dir)<< " | Resultado: el grafo es DISPERSO"<<endl;
             else cout << "\nDensidad: "<<calcDensity(dir)<<" | Resultado: el grafo es DENSO" << endl;
-            cout <<"===============================================\n";
+            cout <<"===========================================================\n";
         }
 
         void type(node *nodo){ // Hundido o Fuente
@@ -601,6 +601,17 @@ class Graph {
             }
 
             return result;
+        }
+
+        bool isConnected(){
+            bool resultado = true;
+
+            ni = nodes.begin();
+            while (ni!= nodes.end()){
+                if ((*ni)->getNodesAdj().size()==0)
+                    resultado = false;
+            }
+            
         }
 
         node* getNode(GV value){
