@@ -1,5 +1,11 @@
 # Graphs
 
-run with
+*Giordano
+*Roosevelt
+*Antonio
 
-```g++ -framework OpenGL -framework GLUT main.cpp ```
+## Algorithms and data structures project, graph implementation and OpenGL rendering.
+
+run
+
+`g++ -framework OpenGL -framework GLUT main.cpp`
