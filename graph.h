@@ -610,8 +610,10 @@ class Graph {
             while (ni!= nodes.end()){
                 if ((*ni)->getNodesAdj().size()==0)
                     resultado = false;
+            ni++;
             }
-            
+
+            return resultado;
         }
 
         node* getNode(GV value){

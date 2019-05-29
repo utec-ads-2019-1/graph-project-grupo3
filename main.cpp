@@ -32,15 +32,12 @@ int main() {
   g.insertEdge(4,2,5);
   g.insertEdge(14,3,5);
 
+  g.insertNode(9,0,0);
+
 
     g.print();
     g.density();
-    g.removeEdge(3,5);
-    cout << "paso"<<endl;
-    g.print();
-
-
-g.density();
+    cout <<"A: "<< g.isConnected()<<endl;
 
 
 
