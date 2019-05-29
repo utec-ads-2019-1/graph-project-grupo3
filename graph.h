@@ -126,6 +126,7 @@ class Graph {
     Graph<GV,GV> kruskal() { //Pasar como grafo
             Graph krusky (false);
             EdgeSeq krusk;
+            NodeSet visitedNode;
             auto mySet = new DsjSet<GE>;
             int totalWeight = 0;
 
@@ -145,8 +146,18 @@ class Graph {
                 if( mySet->findSet(first->getData()) != mySet->findSet(second->getData()) ) { //si no tienen los mismos padres
                     mySet->unionS(first->getData(), second->getData());
                     totalWeight += (*ei)->getData();
-                    krusky.insertNode((*ei)->nodes[0]->getData(),0,0);
-                    krusky.insertNode((*ei)->nodes[1]->getData(),0,0);
+                    auto v = visitedNode.find((*ei)->nodes[0]); //Conntrolar no volver a insertar el mismo nodo
+                    auto v2 = visitedNode.find((*ei)->nodes[1]);
+                    if(v ==visitedNode.end()) {
+                        krusky.insertNode((*ei)->nodes[0]->getData(),0,0);
+                        visitedNode.insert((*ei)->nodes[0]);
+                    }
+                    if(v2 == visitedNode.end()){
+                        krusky.insertNode((*ei)->nodes[1]->getData(),0,0);
+                        visitedNode.insert((*ei)->nodes[1]);
+                    }
+
+
                     krusky.insertEdge((*ei)->getData(),(*ei)->nodes[0]->getData() ,(*ei)->nodes[1]->getData());
                     krusk.push_back(*ei);
                 }
@@ -156,16 +167,7 @@ class Graph {
                 //cout << "Peso: "<< totalWeight<<endl;
                 return krusky;
         }
-        void printKruskal(){
-            auto result = kruskal();
-            cout<<"\nImprimiendo Kruskal:\n"<<endl;
-            ei=result.begin();
-            while(ei!=result.end()){
-                node** arr=(*ei)->getNodes();
-                cout<<"Vértices( "<<arr[0]->getData()<<", "<<arr[1]->getData()<<")"<<endl;
-                ei++;
-            }
-        }
+
         NodeSet difference (NodeSet first, NodeSet second){
             NodeSet result;
             auto it = first.begin();
