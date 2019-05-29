@@ -218,7 +218,7 @@ public:
     Graph *DFS(GV begining)
     {
         int count = 0;
-        auto bfsGraph = new Graph(dir, pond);
+        auto bfsGraph = new Graph(dir);
         for (ni = nodes.begin(); ni != nodes.end(); ni++)
         {
             bfsGraph->insertNode((*ni)->getData(), (*ni)->getX(), (*ni)->getY());
