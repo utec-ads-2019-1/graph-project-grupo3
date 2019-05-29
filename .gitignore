@@ -33,6 +33,9 @@
 
 # Visual Studio Code
 .vscode
+.idea/workspace.xml
+.vscode/settings.json
+.vscode/tasks.json
 cmake-build-debug
 .idea
 CMakeLists.txt
