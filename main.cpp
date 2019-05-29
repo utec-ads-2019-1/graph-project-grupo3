@@ -14,7 +14,9 @@ int main() {
   cin>>file;
   g.readFile(file);
   g.print();
-  g.insertEdge(2,4);
+  //cout<<g.stronglyConnectedComponent()<<endl;
+  cout<<"Es bipartito"<<endl;
+  cout<<g.bipartiteGraph()<<endl;
   //Read<int,int> read(file);
   //g=read.getGraph();
 
