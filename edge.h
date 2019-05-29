@@ -3,33 +3,37 @@
 
 #include "node.h"
 
-template <typename E,typename V>
-class Edge {
-    public:
-      typedef Node<V> node;
-      node* nodes[2];
-      Edge(){}
-      Edge(node* node1,node* node2){
-        nodes[0]=node1;
-        nodes[1]=node2;
-        data=1;
-      }
-      Edge(E valueEdge, node* node1,node* node2){
-        nodes[0]=node1;
-        nodes[1]=node2;
-        data=valueEdge;
-      }
-      ~Edge(){ delete this;}
+template <typename E, typename V>
+class Edge
+{
+public:
+  typedef Node<V> node;
+  node *nodes[2];
+  Edge() {}
+  Edge(node *node1, node *node2)
+  {
+    nodes[0] = node1;
+    nodes[1] = node2;
+    data = 1;
+  }
+  Edge(E valueEdge, node *node1, node *node2)
+  {
+    nodes[0] = node1;
+    nodes[1] = node2;
+    data = valueEdge;
+  }
+  ~Edge() { delete this; }
 
-      E getData(){ return data;}
-      node** getNodes(){ return nodes;}
+  E getData() { return data; }
+  node **getNodes() { return nodes; }
 
-      bool operator<(const Edge &other){
-        return other.data<this->data;
-      }
+  bool operator<(const Edge &other)
+  {
+    return other.data < this->data;
+  }
 
-    private:
-        E data;
+private:
+  E data;
 };
 
 #endif
