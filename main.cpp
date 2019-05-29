@@ -35,17 +35,21 @@ int main() {
 
     g.print();
     g.density();
-    /*
+
     auto nuevo = g.prim(0);
-    cout <<"Prim: " << endl;
+    cout <<"**************************\n";
+    cout <<"  Algoritmo de Prim " << endl;
+    cout <<"**************************\n";
     nuevo.print();
 
     auto nuevo2 = g.kruskal();
-    cout <<"Kruskal: " << endl;
+    cout <<"**************************\n";
+    cout <<"   Algoritmo de Kruskal " << endl;
+    cout <<"**************************\n";
     nuevo2.print();
 
-*/
-    /*
+
+
   cout<<"Ingresa nombre de file::";
   cin>>file;
   g.readFile(file);
@@ -57,7 +61,7 @@ int main() {
   cout<<g.bipartiteGraph()<<endl;
   //Read<int,int> read(file);
   //g=read.getGraph();
-     */
+
 
   return EXIT_SUCCESS;
 }

@@ -348,12 +348,15 @@ class Graph {
 
         void print(){
           ni=nodes.begin();
-          cout<<"Imprimiendo nodes:\n"<<endl;
+          cout <<"==========================";
+          cout<<"\n   Imprimiendo Nodes:"<<endl;
+          cout <<"==========================\n";
           while(ni!=nodes.end()){
-            cout<<(*ni)->getData()<<" count:"<<(*ni)->getCountNodesAdj()<<endl;
-            cout<<"DegreeIn: "<<degreInNode(*ni)<<" DegreeOut: "<<degreOutNode(*ni)<<endl;
+            cout<<"Vértice: "<<(*ni)->getData();
+            cout<<" | DegIn: "<<degreInNode(*ni)<<" DegOut: "<<degreOutNode(*ni);
             NodeSeq nodestmp=(*ni)->getNodesAdj();
             NodeIte ni2=nodestmp.begin();
+            cout<<" | Count:"<<(*ni)->getCountNodesAdj()<<" | Vertices Adj: ";
             for(;ni2!=nodestmp.end();ni2++){
               cout<<(*ni2)->getData()<<" ";
             }
@@ -363,7 +366,9 @@ class Graph {
 
           }
           cout << endl;
-          cout<<"\nImprimiendo edges:\n"<<endl;
+            cout <<"==========================";
+            cout<<"\n   Imprimiendo Edges:"<<endl;
+            cout <<"==========================\n";
           ei=edges.begin();
           while(ei!=edges.end()){
             node** arr=(*ei)->getNodes();
@@ -385,9 +390,10 @@ class Graph {
             do{
             cout << "Ingrese una cuota para evaluar la densidad: "; cin >> cuota;
             }while(cuota <=0 || cuota >=1);
-
-            if (calcDensity(dir)<cuota) cout << "\nDensidad: "<<calcDensity(dir)<< "\n|\tResultado: el grafo es DISPERSO"<<endl;
-            else cout << "\nDensidad: "<<calcDensity(dir)<<"\t|\tResultado: el grafo es DENSO" << endl;
+            cout <<"\n=============================================";
+            if (calcDensity(dir)<cuota) cout << "\nDensidad: "<<calcDensity(dir)<< " | Resultado: el grafo es DISPERSO"<<endl;
+            else cout << "\nDensidad: "<<calcDensity(dir)<<" | Resultado: el grafo es DENSO" << endl;
+            cout <<"===============================================\n";
         }
 
         void type(node *nodo){ // Hundido o Fuente
