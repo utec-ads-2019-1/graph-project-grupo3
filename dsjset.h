@@ -12,7 +12,6 @@ private:
     map<G, Node<G>*> nodes;
 public:
     DsjSet(){};
-
     void makeSet(G value, Node<G>* node){
         this->nodes[value] = node;
     }

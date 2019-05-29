@@ -10,6 +10,7 @@ int main() {
 
   Graph<int,int> g(false);
   string file;
+
   int n=8;
   //Tester
   for(int i = 0; i <= n; i++){
@@ -33,14 +34,24 @@ int main() {
 
 
     g.print();
+  //  g.density();
+    auto nuevo = g.prim(0);
+    cout <<"Prim: " << endl;
+    nuevo.print();
 
-  g.printKruskal();
-  /*cout<<"Ingresa nombre de file::";
+    auto nuevo2 = g.kruskal();
+    cout <<"Kruskal: " << endl;
+    nuevo2.print();
+
+
+    /*
+  cout<<"Ingresa nombre de file::";
   cin>>file;
   g.readFile(file);
   g.print();
-  *///Read<int,int> read(file);
+  ///Read<int,int> read(file);
   //g=read.getGraph();
+     */
 
   return EXIT_SUCCESS;
 }

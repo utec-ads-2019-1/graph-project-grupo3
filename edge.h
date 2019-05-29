@@ -16,7 +16,7 @@ class Edge {
       }
       ~Edge(){ delete this;}
 
-      E getData(){ return data;}
+      E getData(){ return data;} //Renombrar a Peso
 
       node** getNodes(){ return nodes;}
 
