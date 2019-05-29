@@ -76,11 +76,15 @@ public:
             bfsGraph->insertNode((*ni)->getData(), (*ni)->getX(), (*ni)->getY());
             count++;
         }
+
         bool *frequented = new bool[count], desfrequented;
+
+             for (int i = 0; i < count ; i++){
+            frequented[i] = false;
+        }
         queue<node *> container;
         auto currNode = getNode(begining);
         auto prevNode = currNode;
-        int j = 0;
         container.push(currNode);
         while (!container.empty())
         {
