@@ -54,6 +54,12 @@ class Node {
 
 
 
+        Node (V value){
+            data = value;
+            x = y = 0;
+        }
+
+
     private:
         V data;
         NodeSeq nodesAdj;

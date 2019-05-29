@@ -44,13 +44,12 @@ class Graph {
 
         ~Graph(){
           while(edges.empty()){
-            delete edges.back();
+            //delete edges.back();
             edges.pop_back();
           }
           for(int i=0;i<size;i++)
             delete nodes[i];
         }
-
         void insertNode(GV value,double x,double y){ //agregar un valor de x e y aleatorio
           node *n=new node(value,x,y);
           nodes.push_back(n);
@@ -83,6 +82,7 @@ class Graph {
           cout<<"Imprimiendo nodes:\n"<<endl;
           while(ni!=nodes.end()){
               cout<<"Vértice: "<<(*ni)->getData()<<"\tGrado: "<<(*ni)->getDegree()<<endl;
+
             ni++;
 
           }
@@ -204,9 +204,7 @@ class Graph {
             }
             return result;
         }
-/*
 
-*/
         Graph<GV,GV> prim(GV etiqueta){
 
             auto start = dict[etiqueta];
