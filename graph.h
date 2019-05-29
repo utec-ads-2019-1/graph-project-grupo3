@@ -76,10 +76,11 @@ public:
             bfsGraph->insertNode((*ni)->getData(), (*ni)->getX(), (*ni)->getY());
             count++;
         }
-     
-         bool *frequented = new bool[count];
 
-        for (int i = 0; i < count ; i++){
+        bool *frequented = new bool[count];
+
+        for (int i = 0; i < count; i++)
+        {
             frequented[i] = false;
         }
         queue<node *> container;
@@ -90,20 +91,22 @@ public:
             currNode = container.front();
             container.pop();
             vector<node *> listAdjs = currNode->getNodesAdj();
-            for (auto i =listAdjs.begin(); i != listAdjs.end(); ++i)
+            ei = edges.begin();
+            for (auto i = listAdjs.begin(); i != listAdjs.end() && ei != edges.end(); ++i, ++ei)
             {
-                if (!frequented[(*i)->getData()-1])
+
+                if (!frequented[(*i)->getData() - 1])
                 {
-                    bfsGraph->insertEdge(NULL, currNode->getData(), (*i)->getData());
+                    bfsGraph->insertEdge((*ei)->getData(), currNode->getData(), (*i)->getData());
                     container.push(*i);
-                    frequented[(*i)->getData()-1]=true;
-                }   
+                    frequented[(*i)->getData() - 1] = true;
+                }
             }
-            frequented[currNode->getData()-1] = true;
+            frequented[currNode->getData() - 1] = true;
         }
         return bfsGraph;
     }
-    
+
     Graph *DFS(GV begining)
     {
         int count = 0;
@@ -113,10 +116,11 @@ public:
             bfsGraph->insertNode((*ni)->getData(), (*ni)->getX(), (*ni)->getY());
             count++;
         }
-     
-         bool *frequented = new bool[count];
 
-        for (int i = 0; i < count ; i++){
+        bool *frequented = new bool[count];
+
+        for (int i = 0; i < count; i++)
+        {
             frequented[i] = false;
         }
         stack<node *> container;
@@ -127,20 +131,21 @@ public:
             currNode = container.top();
             container.pop();
             vector<node *> listAdjs = currNode->getNodesAdj();
-            for (auto i =listAdjs.begin(); i != listAdjs.end(); ++i)
+            ei = edges.begin();
+            for (auto i = listAdjs.begin(); i != listAdjs.end() && ei != edges.end(); ++i)
             {
-                if (!frequented[(*i)->getData()-1])
+                if (!frequented[(*i)->getData() - 1])
                 {
-                    bfsGraph->insertEdge(NULL, currNode->getData(), (*i)->getData());
+                    bfsGraph->insertEdge((*ei)->getData(), currNode->getData(), (*i)->getData());
                     container.push(*i);
-                    frequented[(*i)->getData()-1]=true;
-                }   
+                    frequented[(*i)->getData() - 1] = true;
+                }
             }
-            frequented[currNode->getData()-1] = true;
+            frequented[currNode->getData() - 1] = true;
         }
         return bfsGraph;
     }
-    
+
     void print()
     {
         ni = nodes.begin();
