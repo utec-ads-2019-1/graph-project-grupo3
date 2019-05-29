@@ -22,6 +22,7 @@ class Node {
           this->x=x;
           this->y=y;
           rank = 0;
+          degree = 0;
           parent = this;
         }
         ~Node(){delete this;}
@@ -33,15 +34,20 @@ class Node {
           //if(!dict.count(nodeAdj)){
            // dict[nodeAdj]=1;
             nodesAdj.push_back(nodeAdj);
+            degree++;
          // }
         }
         V getData(){ return data;};
+        int getDegree(){
+            return degree;
+        }
 
         Node (V value){
             data = value;
             x = y = 0;
             rank = 0;
             parent = this;
+            degree = 0;
         }
         template <class>
         friend class DsjSet;
@@ -58,6 +64,7 @@ class Node {
 protected:
         Node<V>* parent;
         int rank;
+        int degree;
 };
 
 #endif

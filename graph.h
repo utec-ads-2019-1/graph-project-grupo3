@@ -82,7 +82,7 @@ class Graph {
           ni=nodes.begin();
           cout<<"Imprimiendo nodes:\n"<<endl;
           while(ni!=nodes.end()){
-              cout<<(*ni)->getData()<<"\t";
+              cout<<"Vértice: "<<(*ni)->getData()<<"\tGrado: "<<(*ni)->getDegree()<<endl;
             ni++;
 
           }
@@ -97,13 +97,17 @@ class Graph {
           }
         }
 
-        float calcDensity(bool dir){
+        double calcDensity(bool dir){
             if (dir) return (edges.size()*2)/(nodes.size()*(nodes.size()-1));
             else return (edges.size())/(nodes.size()*(nodes.size()-1));
         }
 
         void density(){ //Controlar que esté en el rango de 0<a<1
-            int cuota; cout << "Ingrese una cuota para evaluar la densidad: "; cin >> cuota;
+            double cuota;
+            do{
+            cout << "Ingrese una cuota para evaluar la densidad: "; cin >> cuota;
+            }while(cuota <=0 || cuota >=1);
+
             if (calcDensity(dir)<cuota) cout << "El grafo es Disperso"<<endl;
             else cout <<"El grafo es Denso" << endl;
         }
@@ -114,13 +118,35 @@ class Graph {
         }
 
 
-        int degre(){}
-            //todo
-        bool isConexo(){
-            //todo
+        int degreInNode(node nodo){
+            if(dir){
+                int degree=0;
+                ni = nodes.begin();
+                while(ni!=nodes.end()){
+                    ei = edges.begin();
+                    while(ni!=edges.end()){
+                        if ((*ei)->node[0]==nodo)
+                            degree++;
+                    }
+                }
+                return degree;
+            }else
+            return nodo.getDegree();
         }
-        bool isBipartite(){
-            //todo
+        int degreOutNode(node nodo){
+            if(dir){
+                int degree=0;
+                ni = nodes.begin();
+                while(ni!=nodes.end()){
+                    ei = edges.begin();
+                    while(ni!=edges.end()){
+                        if ((*ei)->node[1]==nodo)
+                            degree++;
+                    }
+                }
+                return degree;
+            }else
+            return nodo.getDegree();
         }
 
     Graph<GV,GV> kruskal() { //Pasar como grafo
@@ -263,15 +289,12 @@ class Graph {
                         result.insertNode(node1->getData(), 0, 0);
                         visitedResult.insert(node1);
                     }
-
-
-
                     result.insertEdge(currentMin,node1->getData(), node2->getData());
                     resultado.push_back(node2);
                     visited.insert(node2);
                 } else{
                     if(currentMin!=99999 && currentMin2!=99999){
-                        auto v = visitedResult.find(node1); //Conntrolar no volver a insertar el mismo nodo
+                        auto v = visitedResult.find(node1); //Cnntrolar no volver a insertar el mismo nodo
                         auto v2 = visitedResult.find(node2);
                         if(v2 ==visitedResult.end()) {
                             result.insertNode(node2->getData(), 0, 0);
@@ -280,7 +303,7 @@ class Graph {
                             result.insertNode(node1->getData(), 0, 0);
                             visitedResult.insert(node1);
                         }
-                        result.insertEdge(currentMin,node1->getData(), node2->getData());
+                        result.insertEdge(currentMin,node2->getData(), node1->getData());
 
                         resultado.push_back(node2);
                         visited.insert(node2);

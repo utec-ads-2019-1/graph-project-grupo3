@@ -34,14 +34,14 @@ int main() {
 
 
     g.print();
-  //  g.density();
+   // g.density();
     auto nuevo = g.prim(0);
     cout <<"Prim: " << endl;
-    nuevo.print();
+   // nuevo.print();
 
     auto nuevo2 = g.kruskal();
     cout <<"Kruskal: " << endl;
-    nuevo2.print();
+   // nuevo2.print();
 
 
     /*
