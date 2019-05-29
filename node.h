@@ -14,6 +14,7 @@ class Node {
         //typedef typename G::edge edge;
         typedef vector<Node*> NodeSeq;
         typedef unordered_map<Node*,bool> dictNodeAdj;
+        typedef typename NodeSeq::iterator NodeIte;
 
         //EdgeSeq edges;
         Node(){}
@@ -21,9 +22,11 @@ class Node {
           this->data=data;
           this->x=x;
           this->y=y;
+
           rank = 0;
-          degree = 0;
           parent = this;
+          countNodeAdj=0;
+
         }
         ~Node(){delete this;}
 
@@ -31,46 +34,41 @@ class Node {
           return nodesAdj;
         }
         void insertNodeAdj(Node* nodeAdj){
-          //if(!dict.count(nodeAdj)){
-           // dict[nodeAdj]=1;
             nodesAdj.push_back(nodeAdj);
-            degree++;
-         // }
-        }
-        V getData(){ return data;};
-        int getDegree(){
-            return degree;
-        }
-
-        Node (V value){
-            data = value;
-            x = y = 0;
-            rank = 0;
-            parent = this;
-            degree = 0;
+            countNodeAdj++;
         }
         template <class>
         friend class DsjSet;
 
-
-
-        Node (V value){
-            data = value;
-            x = y = 0;
+        void removeNodeAdj(Node *nodeAdj){
+          ni=nodesAdj.begin();
+          while(ni!=nodesAdj.end()){
+            if((*ni)==nodeAdj){
+              nodesAdj.erase(ni,ni+1);
+              countNodeAdj--;
+              return;
+            }
+            ni++;
+          }
         }
+        V getData(){ return data;};
+        double getX(){ return x;}
+        double getY(){ return y;}
+        int getCountNodesAdj(){ return countNodeAdj;}
 
 
     private:
         V data;
         NodeSeq nodesAdj;
         dictNodeAdj dict;
+        NodeIte ni;
+        int countNodeAdj;
         double x;
         double y;
 
 protected:
         Node<V>* parent;
         int rank;
-        int degree;
 };
 
 #endif

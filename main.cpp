@@ -8,7 +8,7 @@ using namespace std;
 int main() {
 
 
-  Graph<int,int> g(false);
+  Graph<int,int> g(false,true);
   string file;
 
   int n=8;
@@ -34,22 +34,28 @@ int main() {
 
 
     g.print();
-   // g.density();
+    g.density();
+    /*
     auto nuevo = g.prim(0);
     cout <<"Prim: " << endl;
-   // nuevo.print();
+    nuevo.print();
 
     auto nuevo2 = g.kruskal();
     cout <<"Kruskal: " << endl;
-   // nuevo2.print();
+    nuevo2.print();
 
-
+*/
     /*
   cout<<"Ingresa nombre de file::";
   cin>>file;
   g.readFile(file);
   g.print();
+
   ///Read<int,int> read(file);
+  //cout<<g.stronglyConnectedComponent()<<endl;
+  cout<<"Es bipartito"<<endl;
+  cout<<g.bipartiteGraph()<<endl;
+  //Read<int,int> read(file);
   //g=read.getGraph();
      */
 
