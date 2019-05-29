@@ -77,8 +77,8 @@ public:
             count++;
         }
         bool *frequented = new bool[count], desfrequented;
+        list<node *> visited;
 
-   
         queue<node *> container;
         auto currNode = getNode(begining);
         auto prevNode = currNode;
@@ -86,23 +86,31 @@ public:
         container.push(currNode);
         while (!container.empty())
         {
-            desfrequented = false;
             prevNode = currNode;
             currNode = container.front();
             container.pop();
             vector<node *> listAdjs = currNode->getNodesAdj();
 
-            for (auto i = listAdjs.begin(); i != listAdjs.end(); ++i)
+            for (auto i = visited.begin(); i != visited.end(); ++i)
             {
-
-                if (!desfrequented)
+                if (*i == currNode)
                 {
-                    desfrequented = true;
-                    if (prevNode != currNode)
-                    {
-                        bfsGraph->insertEdge(NULL, prevNode->getData(), currNode->getData());
-                    }
-                    container.push(*i);
+                    frequented[1] = true;
+                    break;
+                }
+            }
+            if (!frequented[1])
+            {
+                if (prevNode != currNode)
+                {
+                    bfsGraph->insertEdge(NULL, prevNode->getData(), currNode->getData());
+                }
+                container.push(currNode);
+                for (auto i = listAdjs.begin(); i != listAdjs.end(); i++)
+                {
+                    
+                      container.push(*i);
+                    
                 }
             }
         }
