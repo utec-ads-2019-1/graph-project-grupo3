@@ -147,6 +147,12 @@ class Graph {
           }
           return false;
         }
+        bool findNode(GV node1){
+          return dict[node1];
+        }
+        bool findEdge(GV node1,GV node2){
+            return dictE[make_pair(node1,node2)];
+        }
         void print(){
           ni=nodes.begin();
           cout<<"Imprimiendo nodes"<<endl;
