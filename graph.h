@@ -76,92 +76,71 @@ public:
             bfsGraph->insertNode((*ni)->getData(), (*ni)->getX(), (*ni)->getY());
             count++;
         }
+     
+         bool *frequented = new bool[count];
 
-        bool *frequented = new bool[count], desfrequented;
-
-             for (int i = 0; i < count ; i++){
+        for (int i = 0; i < count ; i++){
             frequented[i] = false;
         }
         queue<node *> container;
         auto currNode = getNode(begining);
-        auto prevNode = currNode;
         container.push(currNode);
         while (!container.empty())
         {
-            prevNode = currNode;
             currNode = container.front();
             container.pop();
             vector<node *> listAdjs = currNode->getNodesAdj();
-            for (auto i = listAdjs.begin(); i != listAdjs.end(); ++i)
+            for (auto i =listAdjs.begin(); i != listAdjs.end(); ++i)
             {
-                if (*i == currNode)
+                if (!frequented[(*i)->getData()-1])
                 {
-                    frequented[1] = true;
-                    break;
-                }
+                    bfsGraph->insertEdge(NULL, currNode->getData(), (*i)->getData());
+                    container.push(*i);
+                    frequented[(*i)->getData()-1]=true;
+                }   
             }
-            if (!frequented[1])
-            {
-                if (prevNode != currNode)
-                {
-                    bfsGraph->insertEdge(NULL, prevNode->getData(), currNode->getData());
-                }
-                container.push(currNode);
-                for (auto i = listAdjs.begin(); i != listAdjs.end(); i++)
-                {
-                      container.push(*i);
-                }
-            }
+            frequented[currNode->getData()-1] = true;
         }
         return bfsGraph;
     }
-    /*
-    Graph *DFS(int begining)
+    
+    Graph *DFS(GV begining)
     {
         int count = 0;
-        auto bfsGraph = new Graph;
+        auto bfsGraph = new Graph(dir);
         for (ni = nodes.begin(); ni != nodes.end(); ni++)
         {
             bfsGraph->insertNode((*ni)->getData(), (*ni)->getX(), (*ni)->getY());
             count++;
         }
-        bool *frequented = new bool[count], desfrequented;
+     
+         bool *frequented = new bool[count];
 
-        for (int i = 0; i < count; i++)
-        {
+        for (int i = 0; i < count ; i++){
             frequented[i] = false;
         }
         stack<node *> container;
-        auto currNode = getNodead(begining);
-        auto prevNode = currNode;
-        list<node *> visited;
+        auto currNode = getNode(begining);
         container.push(currNode);
         while (!container.empty())
         {
-            prevNode = currNode;
             currNode = container.top();
             container.pop();
-            for (auto it = 0; it != frequented[count]; it++)
+            vector<node *> listAdjs = currNode->getNodesAdj();
+            for (auto i =listAdjs.begin(); i != listAdjs.end(); ++i)
             {
-                if (!frequented[it])
+                if (!frequented[(*i)->getData()-1])
                 {
-                    frequented[it] = true;
-                    if (prevNode != currNode)
-                    {
-                        bfsGraph->insertEdge(NULL, prevNode->getData(), currNode->getData());
-                    }
-                    visited.push_back(currNode);
-                    
-                    for (ei = currNode->nodes.begin(); ei != currNode->nodes.end(); ei++)
-                    {
-                        container.push((*ei)->nodes[1]);
-                    }
-                }
+                    bfsGraph->insertEdge(NULL, currNode->getData(), (*i)->getData());
+                    container.push(*i);
+                    frequented[(*i)->getData()-1]=true;
+                }   
             }
+            frequented[currNode->getData()-1] = true;
         }
-        //return bfsGraph;
+        return bfsGraph;
     }
-    */
+    
     void print()
     {
         ni = nodes.begin();

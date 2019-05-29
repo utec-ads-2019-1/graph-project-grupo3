@@ -21,6 +21,8 @@ int main(int argc, char **argv)
     g.print();
     auto bfs1 = g.BFS(2);
     bfs1->print();
+      auto dfs1 = g.DFS(2);
+    dfs1->print();
     //Read<int,int> read(file);
     //g=read.getGraph();
 
