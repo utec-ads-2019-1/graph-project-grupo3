@@ -15,7 +15,6 @@
 #include "node.h"
 #include "edge.h"
 
-
 using namespace std;
 
 template <typename GV,typename GE>
@@ -45,10 +44,15 @@ class Graph {
           }*/
 
         }
+        for (int i = 0; i < size; i++)
+            delete nodes[i];
+    }
 
-        bool insertNode(GV value,double x,double y){
-          if(!dict[value]){
-            node *n=new node(value,x,y);
+    bool insertNode(GV value, double x, double y)
+    {
+        if (!dict[value])
+        {
+            node *n = new node(value, x, y);
             nodes.push_back(n);
             dict[value]=n;
             size++;
@@ -70,17 +74,44 @@ class Graph {
           }
           return false;
         }
-        bool insertEdge(GV node1,GV node2){
-          if(pond)
+        bool removeNode(GV value){
+          ni=nodes.begin();
+          while(ni!=nodes.end()){
+            if(ni->data==value){
+              nodes.erase(ni,ni+1);
+              delete dict[value];
+              dict[value]=nullptr;
+              return true;
+        }
+        return false;
+    }
+    bool removeNode(GV value)
+    {
+        ni = nodes.begin();
+        while (ni != nodes.end())
+        {
+            if (ni->data == value)
+            {
+                nodes.erase(ni, ni + 1);
+                delete dict[value];
+                dict[value] = nullptr;
+                return true;
+            }
+            ni++;
+        }
+        return false;
+    }
+    bool insertEdge(GV node1, GV node2)
+    {
+        if (pond)
             throw printf("Debe ingresar un peso para la arista\n");
 
-          if(!dictE[make_pair(node1,node2)]){
-
-            edge *e=new edge(dict[node1],dict[node2]);
+        if (!dictE[make_pair(node1, node2)])
+        {
 
 
             edges.push_back(e);
-            dictE[make_pair(node1,node2)]=1;
+            dictE[make_pair(node1, node2)] = 1;
 
             node* n1=dict[node1];
             node* n2=dict[node2];
@@ -92,22 +123,24 @@ class Graph {
               n2->insertNodeAdj(n1);
             }
             return true;
-          }
-          return false;
         }
-        bool insertEdge(GE edgeV,GV node1,GV node2){
-          if(!pond)
+        return false;
+    }
+    bool insertEdge(GE edgeV, GV node1, GV node2)
+    {
+        if (!pond)
             throw printf("No debe ingresar un peso para la arista\n");
-          if(!dictE[make_pair(node1,node2)]){
+        if (!dictE[make_pair(node1, node2)])
+        {
 
             edge *e=new edge(dict[node1],dict[node2]);
             ei=edges.begin();
 
-            while(ei!=edges.end() && (*ei)->getData()>edgeV)
-             ei++;
+            while (ei != edges.end() && (*ei)->getData() > edgeV)
+                ei++;
 
-            edges.insert(ei,e);
-            dictE[make_pair(node1,node2)]=1;
+            edges.insert(ei, e);
+            dictE[make_pair(node1, node2)] = 1;
 
             mAdj[make_pair(node1,node2)]=edgeV;
             node* n1=dict[node1];
@@ -347,16 +380,17 @@ class Graph {
             cout<<endl;
             cout<<"-----------------------------"<<endl;
             ni++;
-          }
-          cout<<"Imprimiendo edges"<<endl;
-          ei=edges.begin();
-          while(ei!=edges.end()){
-            cout<<(*ei)->getData()<<" - Vertices :: ";
-            node** arr=(*ei)->getNodes();
-            cout<<" v1::"<<arr[0]->getData()<<" / v2::"<<arr[1]->getData()<<endl;
-            ei++;
-          }
         }
+        cout << "Imprimiendo edges" << endl;
+        ei = edges.begin();
+        while (ei != edges.end())
+        {
+            cout << (*ei)->getData() << " - Vertices :: ";
+            node **arr = (*ei)->getNodes();
+            cout << " v1::" << arr[0]->getData() << " / v2::" << arr[1]->getData() << endl;
+            ei++;
+        }
+    }
 
         node* getNode(GV value){
           if(dict[value])
@@ -403,7 +437,6 @@ void Graph<GV,GE>::readFile(string fileName){
       s>>valueNode1>>valueNode2>>valueEdge;
       insertEdge(valueEdge,valueNode1,valueNode2);
     }
-  }
-}
+};
 
 #endif

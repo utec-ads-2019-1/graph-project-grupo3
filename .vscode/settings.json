@@ -9,6 +9,10 @@
         "string_view": "cpp",
         "*.tcc": "cpp",
         "streambuf": "cpp",
-        "array": "cpp"
+        "array": "cpp",
+        "utility": "cpp",
+        "list": "cpp",
+        "vector": "cpp",
+        "unordered_map": "cpp"
     }
 }
