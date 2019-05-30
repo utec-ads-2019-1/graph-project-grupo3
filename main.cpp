@@ -25,7 +25,7 @@ int main() {
     g.print();
     g.print();
     g.density();
-    g.isConnected();
+    g.conexo();
 
 
 

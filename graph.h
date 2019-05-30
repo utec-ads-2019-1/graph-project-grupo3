@@ -464,7 +464,7 @@ class Graph {
         }
 
     Graph<GV,GV> kruskal() { //Pasar como grafo
-            if(!dir && isConnected()) {
+            if(!dir && conexo()) {
                 Graph krusky(false, true);
                 EdgeSeq krusk;
                 NodeSet visitedNode;
@@ -528,7 +528,7 @@ class Graph {
 
         Graph<GV,GV> prim(GV etiqueta){
 
-            if(!dir && isConnected()) { //Si no es dirigido y es conexo
+            if(!dir && conexo()) { //Si no es dirigido y es conexo
                 auto start = dict[etiqueta];
                 int weight=0;
                 if (start) {
@@ -652,18 +652,6 @@ class Graph {
                 throw out_of_range("El algoritmo de Prim no funciona para grafos dirigidos");
         }
 
-        bool isConnected(){
-            bool resultado = true;
-
-            ni = nodes.begin();
-            while (ni!= nodes.end()){
-                if ((*ni)->getNodesAdj().size()==0)
-                    resultado = false;
-            ni++;
-            }
-            (resultado)? cout << "Grafo CONEXO\n": cout<< "Grafo NO CONEXO\n";
-            return resultado;
-        }
 
         node* getNode(GV value){
           if(dict[value])
