@@ -18,13 +18,6 @@
 #include "dsjset.h"
 
 using namespace std;
-template <typename GV>
-struct orderbyrank {
-    bool operator() (Node<GV>* const &a, Node<GV>* const &b) {
-        return a->rank > b->rank;
-    }
-};
-
 template <typename GV,typename GE>
 class Graph {
     public:
@@ -357,7 +350,8 @@ class Graph {
             cout<<" | DegIn: "<<degreInNode(*ni)<<" DegOut: "<<degreOutNode(*ni);
             NodeSeq nodestmp=(*ni)->getNodesAdj();
             NodeIte ni2=nodestmp.begin();
-            cout<<" | Count:"<<(*ni)->getCountNodesAdj()<<" | Vertices Adj: ";
+            cout<<" | Tipo: ";type(*ni);
+            cout <<" | Vertices Adj: ";
             for(;ni2!=nodestmp.end();ni2++){
               cout<<(*ni2)->getData()<<" ";
             }
@@ -398,11 +392,12 @@ class Graph {
         }
 
         void type(node *nodo){ // Hundido o Fuente
-            if (degreInNode(nodo)==0){
-                cout << "Fuente" <<endl;
-            }else if(degreOutNode(nodo)==0){
-                cout <<"Hundido" <<endl;
-            }
+            if (degreInNode(nodo)==0)
+                cout << "Fuente ";
+            else if(degreOutNode(nodo)==0)
+                cout <<"Hundido ";
+            else
+                cout << "Normal ";
         }
 
 
@@ -438,51 +433,56 @@ class Graph {
         }
 
     Graph<GV,GV> kruskal() { //Pasar como grafo
-            Graph krusky (false, true);
-            EdgeSeq krusk;
-            NodeSet visitedNode;
-            auto mySet = new DsjSet<GE>;
-            int totalWeight = 0;
+            if(!dir && isConnected()) {
+                Graph krusky(false, true);
+                EdgeSeq krusk;
+                NodeSet visitedNode;
+                auto mySet = new DsjSet<GE>;
+                int totalWeight = 0;
 
-            for (ni = nodes.begin(); ni!=nodes.end(); ni++)
-                mySet->makeSet((*ni)->getData(), *ni);
+                for (ni = nodes.begin(); ni != nodes.end(); ni++)
+                    mySet->makeSet((*ni)->getData(), *ni);
 
-            edges.sort([](edge* first, edge* second){ //Ordenar de acuerdo a los pesos
-                int wgtFirst = first->getData(); //Peso del primero
-                int wgtSecond = second->getData();
-                return wgtFirst < wgtSecond;
-            });
+                edges.sort([](edge *first, edge *second) { //Ordenar de acuerdo a los pesos
+                    int wgtFirst = first->getData(); //Peso del primero
+                    int wgtSecond = second->getData();
+                    return wgtFirst < wgtSecond;
+                });
 
-            ei = edges.begin();
-            while(ei!=edges.end()){
-                auto first = (*ei)->nodes[0];
-                auto second = (*ei)->nodes[1];
-                if( mySet->findSet(first->getData()) != mySet->findSet(second->getData()) ) { //si no tienen los mismos padres
-                    mySet->unionS(first->getData(), second->getData());
-                    totalWeight += (*ei)->getData();
+                ei = edges.begin();
+                while (ei != edges.end()) {
+                    auto first = (*ei)->nodes[0];
+                    auto second = (*ei)->nodes[1];
+                    if (mySet->findSet(first->getData()) !=
+                        mySet->findSet(second->getData())) { //si no tienen los mismos padres
+                        mySet->unionS(first->getData(), second->getData());
+                        totalWeight += (*ei)->getData();
 
 
+                        auto v = visitedNode.find((*ei)->nodes[0]); //Conntrolar no volver a insertar el mismo nodo
+                        auto v2 = visitedNode.find((*ei)->nodes[1]);
+                        if (v == visitedNode.end()) {
+                            krusky.insertNode((*ei)->nodes[0]->getData(), 0, 0);
+                            visitedNode.insert((*ei)->nodes[0]);
+                        }
+                        if (v2 == visitedNode.end()) {
+                            krusky.insertNode((*ei)->nodes[1]->getData(), 0, 0);
+                            visitedNode.insert((*ei)->nodes[1]);
+                        }
 
-                    auto v = visitedNode.find((*ei)->nodes[0]); //Conntrolar no volver a insertar el mismo nodo
-                    auto v2 = visitedNode.find((*ei)->nodes[1]);
-                    if(v ==visitedNode.end()) {
-                        krusky.insertNode((*ei)->nodes[0]->getData(),0,0);
-                        visitedNode.insert((*ei)->nodes[0]);
+                        cout << "Vertices( " << (*ei)->nodes[0]->getData()<<", "<< (*ei)->nodes[1]->getData() << ")";
+                        cout << "\t|\tPeso: "<<(*ei)->getData() << endl;
+                        krusky.insertEdge((*ei)->getData(), (*ei)->nodes[0]->getData(), (*ei)->nodes[1]->getData());
+                        krusk.push_back(*ei);
                     }
-                    if(v2 == visitedNode.end()){
-                        krusky.insertNode((*ei)->nodes[1]->getData(),0,0);
-                        visitedNode.insert((*ei)->nodes[1]);
-                    }
+                    ei++;
 
-                    krusky.insertEdge((*ei)->getData(),(*ei)->nodes[0]->getData() ,(*ei)->nodes[1]->getData());
-                    krusk.push_back(*ei);
                 }
-                ei++;
-
-            }
-                cout << "Peso: "<< totalWeight<<endl;
+                cout << "Peso total: " << totalWeight << endl;
                 return krusky;
-        }
+            } else
+                throw out_of_range("El algoritmo de Kruskal no funciona para grafos dirigidos");
+            }
 
         NodeSet difference (NodeSet first, NodeSet second){
             NodeSet result;
@@ -497,111 +497,128 @@ class Graph {
 
         Graph<GV,GV> prim(GV etiqueta){
 
-            auto start = dict[etiqueta];
-            Graph result (false, true);
-            NodeSeq resultado;
-            NodeSet visited, visitedResult, totalNodes, remainded;
-            visited.insert(start);
-            //Insertar inicial en el grafo
-            resultado.push_back(start);
-            //Llenar el set de nodos
-            for (ni = nodes.begin(); ni!=nodes.end(); ni++) //llenar los nodes
-                totalNodes.insert(*ni);
+            if(!dir && isConnected()) { //Si no es dirigido y es conexo
+                auto start = dict[etiqueta];
+                int weight=0;
+                if (start) {
+                    Graph result(false, true);
+                    NodeSet visited, visitedResult, totalNodes, remainded;
+                    visited.insert(start);
+                    //Llenar el set de nodos
+                    for (ni = nodes.begin(); ni != nodes.end(); ni++) //llenar los nodes
+                        totalNodes.insert(*ni);
 
-            edges.sort([](edge* first, edge* second){ //Ordenar de acuerdo a los pesos
-                int wgtFirst = first->getData();
-                int wgtSecond = second->getData();
-                return wgtFirst < wgtSecond;
-            });
+                    edges.sort([](edge *first, edge *second) { //Ordenar de acuerdo a los pesos
+                        int wgtFirst = first->getData();
+                        int wgtSecond = second->getData();
+                        return wgtFirst < wgtSecond;
+                    });
 
-            while(visited != totalNodes) {
-                remainded = difference(totalNodes, visited);
-                int currentMin = 99999;
-                int currentMin2 = 99999;
-                auto node1 = new node;
-                auto node2 = new node;
-                auto node11 = new node;
-                auto node22 = new node;
+                    while (visited != totalNodes) {
+                        remainded = difference(totalNodes, visited);
+                        int currentMin = 99999;
+                        int currentMin2 = 99999;
+                        auto node1 = new node;
+                        auto node2 = new node;
+                        auto node11 = new node;
+                        auto node22 = new node;
 
-                ei = edges.begin();
-                while (ei != edges.end()) {
-                    auto v = visited.find((*ei)->nodes[0]);
-                    auto r = remainded.find((*ei)->nodes[1]);
-                    if ((v != visited.end()) && (r != remainded.end())) {
-                        int min = (*ei)->getData();
-                        if(min < currentMin) {
-                            currentMin = min;
-                            node1 = (*ei)->nodes[0];
-                            node2 = (*ei)->nodes[1];
+                        ei = edges.begin();
+                        while (ei != edges.end()) {
+                            auto v = visited.find((*ei)->nodes[0]);
+                            auto r = remainded.find((*ei)->nodes[1]);
+                            if ((v != visited.end()) && (r != remainded.end())) {
+                                int min = (*ei)->getData();
+                                if (min < currentMin) {
+                                    currentMin = min;
+                                    node1 = (*ei)->nodes[0];
+                                    node2 = (*ei)->nodes[1];
+                                }
+                            }
+                            ei++;
                         }
-                    }
-                    ei++;
-                }
 
-                ei = edges.begin();
-                while (ei != edges.end()) {
-                    auto v = visited.find((*ei)->nodes[1]);
-                    auto r = remainded.find((*ei)->nodes[0]);
-                    if ((v != visited.end()) && (r != remainded.end())) {
-                       int min = (*ei)->getData();
-                        if(min < currentMin2){
-                            currentMin2 = min;
-                            node11 = (*ei)->nodes[1];
-                            node22 = (*ei)->nodes[0];
+                        ei = edges.begin();
+                        while (ei != edges.end()) {
+                            auto v = visited.find((*ei)->nodes[1]);
+                            auto r = remainded.find((*ei)->nodes[0]);
+                            if ((v != visited.end()) && (r != remainded.end())) {
+                                int min = (*ei)->getData();
+                                if (min < currentMin2) {
+                                    currentMin2 = min;
+                                    node11 = (*ei)->nodes[1];
+                                    node22 = (*ei)->nodes[0];
+                                }
+                            }
+                            ei++;
                         }
-                    }ei++;
-                }
-                //Rellenar el grafo y controlar cuando hay varias opciones
-                if (currentMin > currentMin2) {
-                    auto v = visitedResult.find(node11); //Conntrolar no volver a insertar el mismo nodo
-                    auto v2 = visitedResult.find(node22);
-                    if(v2 ==visitedResult.end()) {
-                        result.insertNode(node22->getData(), 0, 0);
-                        visitedResult.insert(node22);
-                    }if(v ==visitedResult.end()) {
-                        result.insertNode(node11->getData(), 0, 0);
-                        visitedResult.insert(node11);
-                    }
-                    result.insertEdge(currentMin2,node11->getData(), node22->getData());
+                        //Rellenar el grafo y controlar cuando hay varias opciones
+                        if (currentMin > currentMin2) {
+                            auto v = visitedResult.find(node11); //Conntrolar no volver a insertar el mismo nodo
+                            auto v2 = visitedResult.find(node22);
+                            if (v2 == visitedResult.end()) {
+                                result.insertNode(node22->getData(), 0, 0);
+                                visitedResult.insert(node22);
+                            }
+                            if (v == visitedResult.end()) {
+                                result.insertNode(node11->getData(), 0, 0);
+                                visitedResult.insert(node11);
+                            }
+                            weight+=currentMin2;
+                            result.insertEdge(currentMin2, node11->getData(), node22->getData());
+                            cout << "Vertices( " << node11->getData()<<", "<<node22->getData() << ")";
+                            cout << "\t|\tPeso: "<<currentMin2 << endl;
 
-                    resultado.push_back(node22);
-                    visited.insert(node22);
-                } else if (currentMin < currentMin2) {
-                    auto v2 = visitedResult.find(node1); //Conntrolar no volver a insertar el mismo nodo
-                    auto v = visitedResult.find(node2);
-                    if(v ==visitedResult.end()) {
-                        result.insertNode(node2->getData(), 0, 0);
-                        visitedResult.insert(node2);
-                    }
-                    if(v2 ==visitedResult.end()) {
-                        result.insertNode(node1->getData(), 0, 0);
-                        visitedResult.insert(node1);
-                    }
-                    result.insertEdge(currentMin,node1->getData(), node2->getData());
-                    resultado.push_back(node2);
-                    visited.insert(node2);
-                } else{
-                    if(currentMin!=99999 && currentMin2!=99999){
-                        auto v = visitedResult.find(node1); //Cnntrolar no volver a insertar el mismo nodo
-                        auto v2 = visitedResult.find(node2);
-                        if(v2 ==visitedResult.end()) {
-                            result.insertNode(node2->getData(), 0, 0);
-                            visitedResult.insert(node2);
-                        }if(v ==visitedResult.end()) {
-                            result.insertNode(node1->getData(), 0, 0);
-                            visitedResult.insert(node1);
+                            visited.insert(node22);
+                        } else if (currentMin < currentMin2) {
+                            auto v2 = visitedResult.find(node1); //Conntrolar no volver a insertar el mismo nodo
+                            auto v = visitedResult.find(node2);
+                            if (v == visitedResult.end()) {
+                                result.insertNode(node2->getData(), 0, 0);
+                                visitedResult.insert(node2);
+                            }
+                            if (v2 == visitedResult.end()) {
+                                result.insertNode(node1->getData(), 0, 0);
+                                visitedResult.insert(node1);
+                            }
+                            weight+=currentMin;
+                            result.insertEdge(currentMin, node1->getData(), node2->getData());
+                            cout << "Vertices( " << node1->getData()<<", "<<node2->getData() << ")";
+                            cout << "\t|\tPeso: "<<currentMin << endl;
+
+                            visited.insert(node2);
+                        } else {
+                            if (currentMin != 99999 && currentMin2 != 99999) {
+                                auto v = visitedResult.find(node1); //Cnntrolar no volver a insertar el mismo nodo
+                                auto v2 = visitedResult.find(node2);
+                                if (v2 == visitedResult.end()) {
+                                    result.insertNode(node2->getData(), 0, 0);
+                                    visitedResult.insert(node2);
+                                }
+                                if (v == visitedResult.end()) {
+                                    result.insertNode(node1->getData(), 0, 0);
+                                    visitedResult.insert(node1);
+                                }
+
+                                weight+=currentMin;
+                                result.insertEdge(currentMin, node1->getData(), node2->getData());
+                                cout << "Vertices( " << node1->getData()<<", "<<node2->getData() << ")";
+                                cout << "\t|\tPeso: "<<currentMin << endl;
+
+                                visited.insert(node2);
+                            }
+
                         }
-                        result.insertEdge(currentMin,node1->getData(), node2->getData());
 
-                        resultado.push_back(node2);
-                        visited.insert(node2);
                     }
+                    cout << "Peso Total: "<<weight<<endl;
 
+                    return result;
+                } else {
+                    throw out_of_range("El nodo no está en el grafo");
                 }
-
-            }
-
-            return result;
+            }else
+                throw out_of_range("El algoritmo de Prim no funciona para grafos dirigidos");
         }
 
         bool isConnected(){
