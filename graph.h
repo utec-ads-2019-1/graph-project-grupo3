@@ -351,6 +351,7 @@ class Graph {
           cout <<"==========================";
           cout<<"\n   Imprimiendo Nodes:"<<endl;
           cout <<"==========================\n";
+
           while(ni!=nodes.end()){
             cout<<"Vértice: "<<(*ni)->getData();
             cout<<" | DegIn: "<<degreInNode(*ni)<<" DegOut: "<<degreOutNode(*ni);
@@ -405,33 +406,31 @@ class Graph {
         }
 
 
-        int degreInNode(node *nodo){
+        int degreOutNode(node *nodo){
             if(dir){
-                int degree=0;
-                ni = nodes.begin();
-                while(ni!=nodes.end()){
-                    ei = edges.begin();
-                    while(ei!=edges.end()){
-                        if ((*ei)->getNodes()[0]==nodo)
-                            degree++;
-                    }
-                }
+                int degree = 0;
+                 typename dictEdges::iterator it;
+                 it = dictE.begin();
+                 while(it != dictE.end()){ //typedef map<pair<GV,GV>,bool> dictEdges;
+                     if((*it).second && (((*it).first).first == nodo->getData()) ){
+                         degree++;
+                     }
+                     it++;
+                 }
                 return degree;
             }else
-            return nodo->getCountNodesAdj();
+                return nodo->getCountNodesAdj();
         }
-        int degreOutNode(node* nodo){
+        int degreInNode(node* nodo){
             if(dir){
-                int degree=0;
-                ni = nodes.begin();
-                while(ni!=nodes.end()){
-                    ei = edges.begin();
-                    while(ei!=edges.end()){
-                        if ((*ei)->getNodes()[1]==nodo)
-                            degree++;
-                        ei++;
+                int degree = 0;
+                typename dictEdges::iterator it;
+                it = dictE.begin();
+                while(it != dictE.end()){ //typedef map<pair<GV,GV>,bool> dictEdges;
+                    if((*it).second && (((*it).first).second == nodo->getData()) ){
+                        degree++;
                     }
-                    ni++;
+                    it++;
                 }
                 return degree;
             }else
@@ -461,6 +460,8 @@ class Graph {
                 if( mySet->findSet(first->getData()) != mySet->findSet(second->getData()) ) { //si no tienen los mismos padres
                     mySet->unionS(first->getData(), second->getData());
                     totalWeight += (*ei)->getData();
+
+
 
                     auto v = visitedNode.find((*ei)->nodes[0]); //Conntrolar no volver a insertar el mismo nodo
                     auto v2 = visitedNode.find((*ei)->nodes[1]);
@@ -612,7 +613,7 @@ class Graph {
                     resultado = false;
             ni++;
             }
-
+            (resultado)? cout << "Grafo CONEXO\n": cout<< "Grafo NO CONEXO\n";
             return resultado;
         }
 

@@ -8,7 +8,7 @@ using namespace std;
 int main() {
 
 
-  Graph<int,int> g(false,true);
+  Graph<int,int> g(true,true);
   string file;
 
   int n=8;
@@ -31,13 +31,12 @@ int main() {
   g.insertEdge(6,8,6);
   g.insertEdge(4,2,5);
   g.insertEdge(14,3,5);
-
   g.insertNode(9,0,0);
 
 
     g.print();
     g.density();
-    cout <<"A: "<< g.isConnected()<<endl;
+    g.isConnected();
 
 
 
