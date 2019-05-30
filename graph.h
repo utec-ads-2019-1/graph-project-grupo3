@@ -406,7 +406,7 @@ class Graph {
 
         double calcDensity(bool dir){
             double resultado=0;
-            if (dir) resultado = double((edges.size()*2))/double(nodes.size()*(nodes.size()-1));
+            if (!dir) resultado = double((edges.size()*2))/double(nodes.size()*(nodes.size()-1));
             else resultado = double(edges.size())/double(nodes.size()*(nodes.size()-1));
             return resultado;
         }
