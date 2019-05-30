@@ -13,10 +13,14 @@ int main() {
   cout<<"Ingresa nombre de file::";
   cin>>file;
   g.readFile(file);
-  g.print();
+  //g.print();
   //cout<<g.stronglyConnectedComponent()<<endl;
-  cout<<"Es bipartito"<<endl;
-  cout<<g.bipartiteGraph()<<endl;
+  //cout<<g.bipartiteGraph()<<endl;
+  g.print();
+  cout<<g.removeEdge(1,2)<<endl;
+  g.print();
+  cout<<g.removeNode(1)<<endl;
+  g.print();
   //Read<int,int> read(file);
   //g=read.getGraph();
 

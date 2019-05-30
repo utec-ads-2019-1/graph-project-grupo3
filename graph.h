@@ -27,6 +27,7 @@ class Graph {
         typedef vector<node*> NodeSeq;
         typedef list<edge*> EdgeSeq;
         typedef unordered_map<GV,node*> dictNode;
+        typedef map<pair<GV,GV>,edge*> dictGetEdge;
         typedef map<pair<GV,GV>,bool> dictEdges;
         typedef map<pair<GV,GV>,GE> matrixAdj;
         typedef typename NodeSeq::iterator NodeIte;
@@ -59,8 +60,12 @@ class Graph {
         bool removeNode(GV value){
           ni=nodes.begin();
           while(ni!=nodes.end()){
-            if(ni->data==value){
+            if((*ni)->getData()==value){
               nodes.erase(ni,ni+1);
+
+              for(auto x:nodes)
+                removeEdge(value,x->getData());
+
               delete dict[value];
               dict[value]=nullptr;
               size--;
@@ -77,7 +82,6 @@ class Graph {
           if(!dictE[make_pair(node1,node2)]){
 
             edge *e=new edge(dict[node1],dict[node2]);
-
 
             edges.push_back(e);
             dictE[make_pair(node1,node2)]=1;
@@ -124,33 +128,32 @@ class Graph {
         }
         bool removeEdge(GV node1,GV node2){
           ei=edges.begin();
-          if(!dictE[make_pair(node1,node2)]|| (!dir && dictE[make_pair(node2,node1)]))
+          if(!dictE[make_pair(node1,node2)] || (!dir && !dictE[make_pair(node2,node1)]))
               return false;
           while(ei!=edges.end()){
-            if(ei->nodes[0]->getData()==node1 && ei->nodes[1]->getData()==node2){
+            if((*ei)->nodes[0]->getData()==node1 && (*ei)->nodes[1]->getData()==node2){
 
-              edge* edgetmp=*ei;
-              node* n1=ei->nodes[0];
-              node* n2=ei->nodes[1];
+              edge* edgetmp=(*ei);
+              node* n1=(*ei)->nodes[0];
+              node* n2=(*ei)->nodes[1];
               n1->removeNodeAdj(n2);
 
               if(!dir){
                 n2->removeNodeAdj(n1);
                 dictE[make_pair(node2,node1)]=false;
               }
-
-              edges.remove(*ei);
+              edges.erase(ei);
               delete edgetmp;
               dictE[make_pair(node1,node2)]=false;
               return true;
             }
-            if(!dir && ei->nodes[1]->getData()==node1 && ei->nodes[0]->getData()==node2){
-              edge* edgetmp=*ei;
-              node* n1=ei->nodes[1];
-              node* n2=ei->nodes[0];
+            if(!dir && (*ei)->nodes[1]->getData()==node1 && (*ei)->nodes[0]->getData()==node2){
+              edge* edgetmp=(*ei);
+              node* n1=(*ei)->nodes[1];
+              node* n2=(*ei)->nodes[0];
               n1->removeNodeAdj(n2);
               n2->removeNodeAdj(n1);
-              edges.remove(*ei);
+              edges.erase(ei);
               delete edgetmp;
               dictE[make_pair(node1,node2)]=false;
               dictE[make_pair(node2,node1)]=false;
@@ -369,6 +372,7 @@ class Graph {
         EdgeSeq edges;
         dictNode dict;
         dictEdges dictE;
+        dictGetEdge dictGetE;
         matrixAdj mAdj;
         int size;
         NodeIte ni;
