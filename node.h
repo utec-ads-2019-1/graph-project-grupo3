@@ -26,7 +26,6 @@ class Node {
           rank = 0;
           parent = this;
           countNodeAdj=0;
-
         }
 
         NodeSeq getNodesAdj(){

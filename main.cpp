@@ -8,7 +8,7 @@ using namespace std;
 int main() {
 
 
-  Graph<int,int> g(false,true);
+  Graph<int,int> g(true,true);
   string file;
 
   int n=3;
@@ -19,9 +19,9 @@ int main() {
 
   g.insertEdge(3,0,1);
   g.insertEdge(4,1,3);
+  g.insertEdge(4,3,0);
   g.insertEdge(7,2,3);
   g.insertEdge(9,0,2);
-  g.insertEdge(9,1,2);
 
     g.print();
     g.print();
@@ -29,9 +29,8 @@ int main() {
     g.conexo();
 
 
-
-
-
+    cout<<"Es bipartito"<<endl;
+    cout<<g.bipartiteGraph()<<endl;
 
     cout <<"\n**************************\n";
     cout <<"  Algoritmo de Prim " << endl;
@@ -43,8 +42,6 @@ int main() {
     cout <<"   Algoritmo de Kruskal " << endl;
     cout <<"**************************\n";
     g.kruskal();
-    cout<<"Es bipartito"<<endl;
-    cout<<g.bipartiteGraph()<<endl;
 
 
 /*

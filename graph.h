@@ -318,27 +318,31 @@ class Graph {
           for(auto x:nodes)
             dictColour[x]='b';
 
-          queue<node*> s;
-          s.push(nodes[0]);
-          dictColour[nodes[0]]='r';
-          while(!s.empty()){
-            node* tmp=s.front();
-            s.pop();
-            NodeSeq tmpSeq=tmp->getNodesAdj();
-            NodeIte ni2=tmpSeq.begin();
-            for(;ni2!=tmpSeq.end();ni2++){
-              if(dictColour[*ni2]=='b'){
-                if(dictColour[tmp]=='r')
-                  dictColour[*ni2]='a';
-                else
-                  dictColour[*ni2]='r';
-                s.push(*ni2);
+          cout<<"Entro a bipartite\n";
+          for(int i=0;i<size;i++){
+            if(dictColour[nodes[i]]=='b'){
+              queue<node*> s;
+              s.push(nodes[i]);
+              dictColour[nodes[i]]='r';
+              while(!s.empty()){
+                node* tmp=s.front();
+                s.pop();
+                NodeSeq tmpSeq=tmp->getNodesAdj();
+                NodeIte ni2=tmpSeq.begin();
+                for(;ni2!=tmpSeq.end();ni2++){
+                  if(dictColour[*ni2]=='b'){
+                    if(dictColour[tmp]=='r')
+                      dictColour[*ni2]='a';
+                    else
+                      dictColour[*ni2]='r';
+                    s.push(*ni2);
+                 }
+                else if(dictColour[tmp]==dictColour[*ni2])
+                   return false;
+                }
               }
-              else if(dictColour[tmp]==dictColour[*ni2])
-                return false;
-            }
+             }
           }
-
           return true;
         }
 
@@ -464,6 +468,7 @@ class Graph {
         }
 
     Graph<GV,GV> kruskal() { //Pasar como grafo
+      cout<<"Encontro a kruskal\n";
             if(!dir && conexo()) {
                 Graph krusky(false, true);
                 EdgeSeq krusk;
@@ -584,7 +589,7 @@ class Graph {
                             ei++;
                         }
                         //Rellenar el grafo y controlar cuando hay varias opciones
-                        if (currentMin > currentMin2) {
+                        if (currentMin > currentMin2){
                             auto v = visitedResult.find(node11); //Conntrolar no volver a insertar el mismo nodo
                             auto v2 = visitedResult.find(node22);
                             if (v2 == visitedResult.end()) {
