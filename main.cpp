@@ -22,9 +22,7 @@ int main() {
   g.insertEdge(7,2,3);
   g.insertEdge(9,0,2);
 
-
-
-
+    g.print();
     g.print();
     g.density();
     g.isConnected();
@@ -52,12 +50,14 @@ int main() {
   cout<<"Ingresa nombre de file::";
   cin>>file;
   g.readFile(file);
-  g.print();
-
-  ///Read<int,int> read(file);
+  //g.print();
   //cout<<g.stronglyConnectedComponent()<<endl;
-  cout<<"Es bipartito"<<endl;
-  cout<<g.bipartiteGraph()<<endl;
+  //cout<<g.bipartiteGraph()<<endl;
+  g.print();
+  cout<<g.removeEdge(1,2)<<endl;
+  g.print();
+  cout<<g.removeNode(1)<<endl;
+  g.print();
   //Read<int,int> read(file);
   //g=read.getGraph();
 
