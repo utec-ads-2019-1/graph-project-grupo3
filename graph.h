@@ -342,6 +342,34 @@ class Graph {
           return true;
         }
 
+        bool dfsUseFull2(node* v,node* dest,unordered_map<GV,bool>& visited){
+          visited[v->getData()] = true;
+          NodeSeq nodesadj=v->getNodesAdj();
+          NodeIte ni2;
+          for (ni2 = nodesadj.begin(); ni2 != nodesadj.end(); ++ni2){
+            if((*ni2)==dest)
+              return true;
+            if (!visited[(*ni2)->getData()])
+               if(dfsUseFull2(*ni2,dest,visited))
+                 return true;
+          }
+          return false;
+        }
+        bool conexo(){
+          for(int i=0;i<size;i++){
+            for(int j=0;j<size;j++){
+              if(i!=j){
+                unordered_map<GV,bool> visited;
+                for(int k=0;k<size;k++)
+                  visited[nodes[k]->getData()]=0;
+                if(!dfsUseFull2(nodes[i],nodes[j],visited))
+                    return false;
+              }
+            }
+          }
+          return true;
+        }
+
         void print(){
           ni=nodes.begin();
           cout <<"==========================";

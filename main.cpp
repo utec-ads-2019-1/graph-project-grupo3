@@ -8,7 +8,7 @@ using namespace std;
 int main() {
 
 
-  Graph<int,int> g(false,true);
+  Graph<int,int> g(true,true);
   string file;
 
   int n=3;
@@ -54,10 +54,8 @@ int main() {
   //cout<<g.stronglyConnectedComponent()<<endl;
   //cout<<g.bipartiteGraph()<<endl;
   g.print();
-  cout<<g.removeEdge(1,2)<<endl;
-  g.print();
-  cout<<g.removeNode(1)<<endl;
-  g.print();
+  cout<<"es bipartito "<<g.conexo()<<endl;
+
   //Read<int,int> read(file);
   //g=read.getGraph();
 
