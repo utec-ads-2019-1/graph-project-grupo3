@@ -32,4 +32,10 @@
 *.app
 
 # Visual Studio Code
-.vscode/ipch
+.vscode
+*.xml
+*.json
+.vscode/tasks.json
+cmake-build-debug
+.idea
+CMakeLists.txt
