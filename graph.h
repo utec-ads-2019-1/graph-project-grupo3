@@ -61,6 +61,10 @@ class Graph {
           return false;
         }
         bool removeNode(GV value){
+
+          if(!dict[value])
+            throw printf("Nodo no existe en el grafo\n");
+
           ni=nodes.begin();
           while(ni!=nodes.end()){
             if((*ni)->getData()==value){
@@ -107,6 +111,7 @@ class Graph {
         bool insertEdge(GE edgeV,GV node1,GV node2){
           if(!pond)
             throw printf("No debe ingresar un peso para la arista\n");
+
           if(!dictE[make_pair(node1,node2)]){
 
             edge *e=new edge(edgeV,dict[node1],dict[node2]);
@@ -134,7 +139,8 @@ class Graph {
         bool removeEdge(GV node1,GV node2){
           ei=edges.begin();
           if(!dictE[make_pair(node1,node2)] || (!dir && !dictE[make_pair(node2,node1)]))
-              return false;
+            throw printf("Arista no existe en el grafo\n");
+
           while(ei!=edges.end()){
             if((*ei)->nodes[0]->getData()==node1 && (*ei)->nodes[1]->getData()==node2){
 
@@ -314,11 +320,45 @@ class Graph {
         bool bipartiteGraph(){
 
           unordered_map<node*,char> dictColour;
-
           for(auto x:nodes)
             dictColour[x]='b';
 
-          cout<<"Entro a bipartite\n";
+          NodeSeq nodestmp;
+          if(dir){
+            for(node* x:nodes){
+              if(degreInNode(x)==0)
+                nodestmp.push_back(x);
+            }
+          }
+          else
+            nodestmp=nodes;
+
+          int sizetmp=nodestmp.size();
+
+          for(int i=0;i<sizetmp;i++){
+            if(dictColour[nodestmp[i]]=='b'){
+              queue<node*> s;
+              s.push(nodestmp[i]);
+              dictColour[nodestmp[i]]='r';
+              while(!s.empty()){
+                node* tmp=s.front();
+                s.pop();
+                NodeSeq tmpSeq=tmp->getNodesAdj();
+                NodeIte ni2=tmpSeq.begin();
+                for(;ni2!=tmpSeq.end();ni2++){
+                  if(dictColour[*ni2]=='b'){
+                    if(dictColour[tmp]=='r')
+                      dictColour[*ni2]='a';
+                    else
+                      dictColour[*ni2]='r';
+                    s.push(*ni2);
+                 }
+                else if(dictColour[tmp]==dictColour[*ni2])
+                   return false;
+                }
+              }
+             }
+          }
           for(int i=0;i<size;i++){
             if(dictColour[nodes[i]]=='b'){
               queue<node*> s;
@@ -341,7 +381,7 @@ class Graph {
                    return false;
                 }
               }
-             }
+            }
           }
           return true;
         }
