@@ -44,6 +44,8 @@ int main() {
     cout <<"   Algoritmo de Kruskal " << endl;
     cout <<"**************************\n";
     g.kruskal();
+    cout<<"Es bipartito"<<endl;
+    cout<<g.bipartiteGraph()<<endl;
 
 
 /*
