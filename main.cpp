@@ -8,7 +8,7 @@ using namespace std;
 int main() {
 
 
-  Graph<int,int> g(false,true);
+  Graph<int,int> g(true,true);
   string file;
 
   int n=4;
@@ -17,10 +17,10 @@ int main() {
       g.insertNode(i, rand()%10/100, rand()%10/100);
 
   g.insertEdge(3,0,1);
+  g.insertEdge(3,1,3);
   g.insertEdge(9,3,2);
   g.insertEdge(9,2,4);
-  g.insertEdge(9,4,0);
-  g.insertEdge(9,1,3);
+  g.insertEdge(9,0,3);
 
     g.print();
     g.density();
