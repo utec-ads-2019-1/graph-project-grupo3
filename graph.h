@@ -181,74 +181,86 @@ class Graph {
             return dictE[make_pair(node1,node2)];
         }
 
-        Graph *BFS(GV begining){
-          int count = 0;
-          auto bfsGraph = new Graph(dir);
-          for (ni = nodes.begin(); ni != nodes.end(); ni++)
-          {
-            bfsGraph->insertNode((*ni)->getData(), (*ni)->getX(), (*ni)->getY());
-            count++;
-          }
-
-          bool *frequented = new bool[count];
-
-          for (int i = 0; i < count; i++)
-            frequented[i] = false;
-
-          queue<node*> container;
-          auto currNode = getNode(begining);
-          container.push(currNode);
-          while (!container.empty()){
-            currNode = container.front();
-            container.pop();
-            vector<node*> listAdjs = currNode->getNodesAdj();
-            ei = edges.begin();
-            for (auto i = listAdjs.begin(); i != listAdjs.end() && ei != edges.end(); ++i, ++ei){
-
-                if (!frequented[(*i)->getData() - 1]){
-                    bfsGraph->insertEdge((*ei)->getData(), currNode->getData(), (*i)->getData());
-                    container.push(*i);
-                    frequented[(*i)->getData() - 1] = true;
-                }
+    Graph *BFS(GV begining){
+        int count = 0;
+        auto hasNode = dict[begining];
+        if (hasNode)
+        {
+            auto bfsGraph = new Graph(dir, pond);
+            for (ni = nodes.begin(); ni != nodes.end(); ni++)
+            {
+                bfsGraph->insertNode((*ni)->getData(), (*ni)->getX(), (*ni)->getY());
+                count++;
             }
-            frequented[currNode->getData() - 1] = true;
-          }
-          return bfsGraph;
+
+            bool *frequented = new bool[count];
+
+            for (int i = 0; i < count; i++)
+                frequented[i] = false;
+
+            queue<node *> container;
+            auto currNode = getNode(begining);
+            container.push(currNode);
+            while (!container.empty())
+            {
+                currNode = container.front();
+                container.pop();
+                vector<node *> listAdjs = currNode->getNodesAdj();
+                ei = edges.begin();
+                for (auto i = listAdjs.begin(); i != listAdjs.end() && ei != edges.end(); ++i, ++ei)
+                {
+
+                    if (!frequented[(*i)->getData() - 1]){
+                        bfsGraph->insertEdge((*ei)->getData(), currNode->getData(), (*i)->getData());
+                        container.push(*i);
+                        frequented[(*i)->getData() - 1] = true;
+                    }
+                }
+                frequented[currNode->getData() - 1] = true;
+            }
+            return bfsGraph;
         }
+        else
+            throw out_of_range("No se enceuntra el nodo");
+    }
 
 
-        Graph *DFS(GV begining){
-          int count = 0;
-          auto bfsGraph = new Graph(dir);
-          for (ni = nodes.begin(); ni != nodes.end(); ni++){
-            bfsGraph->insertNode((*ni)->getData(), (*ni)->getX(), (*ni)->getY());
-            count++;
-          }
-
-          bool *frequented = new bool[count];
-
-          for (int i = 0; i < count; i++)
-            frequented[i] = false;
-
-          stack<node*> container;
-          auto currNode = getNode(begining);
-          container.push(currNode);
-          while (!container.empty()){
-            currNode = container.top();
-            container.pop();
-            vector<node *> listAdjs = currNode->getNodesAdj();
-            ei = edges.begin();
-            for (auto i = listAdjs.begin(); i != listAdjs.end() && ei != edges.end(); ++i){
-                if (!frequented[(*i)->getData() - 1]){
-                    bfsGraph->insertEdge((*ei)->getData(), currNode->getData(), (*i)->getData());
-                    container.push(*i);
-                    frequented[(*i)->getData() - 1] = true;
-                }
+    Graph *DFS(GV begining){
+        int count = 0;
+        auto hasNode = dict[begining];
+        if(hasNode){
+            auto bfsGraph = new Graph(dir,pond);
+            for (ni = nodes.begin(); ni != nodes.end(); ni++){
+                bfsGraph->insertNode((*ni)->getData(), (*ni)->getX(), (*ni)->getY());
+                count++;
             }
-            frequented[currNode->getData() - 1] = true;
-          }
-        return bfsGraph;
-      }
+
+            bool *frequented = new bool[count];
+
+            for (int i = 0; i < count; i++)
+                frequented[i] = false;
+
+            stack<node*> container;
+            auto currNode = getNode(begining);
+            container.push(currNode);
+            while (!container.empty()){
+                currNode = container.top();
+                container.pop();
+                vector<node *> listAdjs = currNode->getNodesAdj();
+                ei = edges.begin();
+                for (auto i = listAdjs.begin(); i != listAdjs.end() && ei != edges.end(); ++i){
+                    if (!frequented[(*i)->getData() - 1]){
+                        bfsGraph->insertEdge((*ei)->getData(), currNode->getData(), (*i)->getData());
+                        container.push(*i);
+                        frequented[(*i)->getData() - 1] = true;
+                    }
+                }
+                frequented[currNode->getData() - 1] = true;
+            }
+            return bfsGraph;
+        }
+        throw out_of_range("No se enceuntra el nodo");
+    }
 
         void fillOrder(GV n, unordered_map<GV,bool> &visited, stack<GV> &Stack){
           visited[n] = true;

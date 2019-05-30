@@ -8,9 +8,9 @@ using namespace std;
 int main() {
 
 
-  Graph<int,int> g(false,true);
+  Graph<char,int> g(false,true);
   string file;
-
+/*
   int n=4;
   //Tester
   for(int i = 0; i <= n; i++)
@@ -39,7 +39,8 @@ int main() {
     g.kruskal();
 
 
-/*
+
+*/
   cout<<"Ingresa nombre de file::";
   cin>>file;
   g.readFile(file);
@@ -47,11 +48,16 @@ int main() {
   //cout<<g.stronglyConnectedComponent()<<endl;
   //cout<<g.bipartiteGraph()<<endl;
   g.print();
+  auto resultado = g.DFS('A');
+  resultado->print();
+
+  //g.kruskal();
+  //g.prim(2);
   cout<<"es bipartito "<<g.conexo()<<endl;
 
   //Read<int,int> read(file);
   //g=read.getGraph();
 
-*/
+
   return EXIT_SUCCESS;
 }
