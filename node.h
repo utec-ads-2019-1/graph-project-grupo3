@@ -17,7 +17,6 @@ class Node {
         typedef typename NodeSeq::iterator NodeIte;
 
         //EdgeSeq edges;
-        Node(){}
         Node(V data,double x,double y){
           this->data=data;
           this->x=x;
@@ -28,7 +27,6 @@ class Node {
           countNodeAdj=0;
 
         }
-        ~Node(){delete this;}
 
         NodeSeq getNodesAdj(){
           return nodesAdj;
@@ -44,7 +42,7 @@ class Node {
           ni=nodesAdj.begin();
           while(ni!=nodesAdj.end()){
             if((*ni)==nodeAdj){
-              nodesAdj.erase(ni,ni+1);
+              nodesAdj.erase(ni);
               countNodeAdj--;
               return;
             }
