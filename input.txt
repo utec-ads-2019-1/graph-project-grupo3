@@ -13,4 +13,6 @@ A B 2
 C A 40
 G B 7
 F B 9
+F E 9
 B H 10
+D H 10

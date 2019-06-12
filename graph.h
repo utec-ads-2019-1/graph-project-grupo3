@@ -29,7 +29,6 @@ class Graph {
         typedef list<edge*> EdgeSeq;
         typedef set<node*> NodeSet;
         typedef unordered_map<GV,node*> dictNode;
-        typedef map<pair<GV,GV>,edge*> dictGetEdge;
         typedef map<pair<GV,GV>,bool> dictEdges;
         typedef map<pair<GV,GV>,GE> matrixAdj;
         typedef typename NodeSeq::iterator NodeIte;
@@ -38,16 +37,12 @@ class Graph {
         Graph(bool dirg,bool pondg):dir(dirg),pond(pondg){size=0;}
 
         ~Graph(){
-          while(edges.empty()){
-            //delete edges.back();
+          while(!edges.empty()){
+            delete edges.back();
             edges.pop_back();
           }
-          /*
-          for(int i=0;i<size;i++){
-            cout<<nodes[i]<<endl;
+          for(int i=0;i<size;i++)
             delete nodes[i];
-          }*/
-
         }
 
         bool insertNode(GV value,double x,double y){
@@ -70,8 +65,13 @@ class Graph {
             if((*ni)->getData()==value){
               nodes.erase(ni,ni+1);
 
-              for(auto x:nodes)
+              for(auto x:nodes){
+                if(x->getData()==value)
+                  continue;
                 removeEdge(value,x->getData());
+                if(dir)
+                  removeEdge(x->getData(),value);
+              }
 
               delete dict[value];
               dict[value]=nullptr;
@@ -84,6 +84,7 @@ class Graph {
         }
 
         bool insertEdge(GV node1,GV node2){
+
           if(pond)
             throw printf("Debe ingresar un peso para la arista\n");
 
@@ -92,14 +93,14 @@ class Graph {
             edge *e=new edge(dict[node1],dict[node2]);
 
             edges.push_back(e);
-            dictE[make_pair(node1,node2)]=1;
+            dictE[make_pair(node1,node2)]=true;
 
             node* n1=dict[node1];
             node* n2=dict[node2];
             mAdj[make_pair(node1,node2)]=1;
             n1->insertNodeAdj(n2);
             if(!dir){
-              dictE[make_pair(node2,node1)]=1;
+              dictE[make_pair(node2,node1)]=true;
               mAdj[make_pair(node2,node1)]=1;
               n2->insertNodeAdj(n1);
             }
@@ -121,14 +122,14 @@ class Graph {
              ei++;
 
             edges.insert(ei,e);
-            dictE[make_pair(node1,node2)]=1;
+            dictE[make_pair(node1,node2)]=true;
 
             mAdj[make_pair(node1,node2)]=edgeV;
             node* n1=dict[node1];
             node* n2=dict[node2];
             n1->insertNodeAdj(n2);
             if(!dir){
-              dictE[make_pair(node2,node1)]=1;
+              dictE[make_pair(node2,node1)]=true;
               n2->insertNodeAdj(n1);
               mAdj[make_pair(node2,node1)]=edgeV;
             }
@@ -138,7 +139,7 @@ class Graph {
         }
         bool removeEdge(GV node1,GV node2){
           ei=edges.begin();
-          if(!dictE[make_pair(node1,node2)] || (!dir && !dictE[make_pair(node2,node1)]))
+          if(!dictE[make_pair(node1,node2)])
             throw printf("Arista no existe en el grafo\n");
 
           while(ei!=edges.end()){
@@ -398,32 +399,34 @@ class Graph {
           return true;
         }
 
-        bool dfsUseFull2(node* v,node* dest,unordered_map<GV,bool>& visited){
-          visited[v->getData()] = true;
-          NodeSeq nodesadj=v->getNodesAdj();
-          NodeIte ni2;
-          for (ni2 = nodesadj.begin(); ni2 != nodesadj.end(); ++ni2){
-            if((*ni2)==dest)
-              return true;
-            if (!visited[(*ni2)->getData()])
-               if(dfsUseFull2(*ni2,dest,visited))
-                 return true;
-          }
-          return false;
-        }
         bool conexo(){
-          for(int i=0;i<size;i++){
-            for(int j=0;j<size;j++){
-              if(i!=j){
-                unordered_map<GV,bool> visited;
-                for(int k=0;k<size;k++)
-                  visited[nodes[k]->getData()]=0;
-                if(!dfsUseFull2(nodes[i],nodes[j],visited))
-                    return false;
+
+          if(dir)
+            throw ("Esta funcion no sirve para grafos dirigidos\n");
+
+          node* tmp;
+          queue<node*> q;
+          q.push(nodes[0]);
+          int cont=1;
+          NodeSeq nodesCurr;
+          unordered_map<node*,bool> states;
+          states[nodes[0]]=true;
+          while(!q.empty()){
+            tmp=q.front();
+            q.pop();
+            nodesCurr=tmp->getNodesAdj();
+            for(auto x:nodesCurr){
+              if(!states[x]){
+                states[x]=true;
+                q.push(x);
+                cont++;
               }
             }
           }
-          return true;
+          if(size==cont)
+            return true;
+
+          return false;
         }
 
         void print(){
@@ -721,7 +724,6 @@ class Graph {
         EdgeSeq edges;
         dictNode dict;
         dictEdges dictE;
-        dictGetEdge dictGetE;
         matrixAdj mAdj;
         int size;
         NodeIte ni;

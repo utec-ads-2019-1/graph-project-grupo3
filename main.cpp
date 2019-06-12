@@ -54,6 +54,7 @@ int main() {
   //g.kruskal();
   //g.prim(2);
   cout<<"es bipartito "<<g.conexo()<<endl;
+  cout<<"Es conexo:: "<<(g.conexo()?"Si":"No")<<endl;
 
   //Read<int,int> read(file);
   //g=read.getGraph();
