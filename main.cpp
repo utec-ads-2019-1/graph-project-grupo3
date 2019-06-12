@@ -8,7 +8,7 @@ using namespace std;
 int main() {
 
 
-  Graph<char,int> g(false,true);
+  Graph<int,int> g(false,true);
   string file;
 /*
   int n=4;
@@ -48,7 +48,7 @@ int main() {
   //cout<<g.stronglyConnectedComponent()<<endl;
   //cout<<g.bipartiteGraph()<<endl;
   g.print();
-  auto resultado = g.DFS('A');
+  auto resultado = g.DFS(2);
   resultado->print();
 
   //g.kruskal();
