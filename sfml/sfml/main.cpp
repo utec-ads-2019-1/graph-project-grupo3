@@ -9,35 +9,49 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "Header.h"
-
+#include <time.h>
 #include <vector>
 #include <string>
 #include <cstdlib>
 #include <fstream>
 #include <sstream>
+#include<cmath>
+
 #include <SFML/Window.hpp>
 
 int rectEquationX(float x1, float x2)
 {
     int posx = (x2 + x1) / 2;
-    return posx + 5;
+    return posx;
 }
 
 int rectEquationY(float y1, float y2)
 {
     int posy = (y2 + y1) / 2;
-    return posy + 5;
+    return posy;
 }
 
+
+void setDirection(float x1, float y1, float x2, float y2, sf::RenderWindow &window){
+    sf::CircleShape triangle;
+    triangle.setRadius(10);
+    triangle.setPointCount(6);
+    int newX1 = rectEquationX(x1, x2);
+    int newY1 = rectEquationY(y1, y2);
+    int newPosY1 =(y2+newY1)/2;
+    int newPosX1 =(x2+newX1)/2;
+    triangle.setPosition(newPosX1, newPosY1);
+    triangle.setFillColor(sf::Color(255,0,0));
+    triangle.setOutlineColor(sf::Color(0,0,255));
+    window.draw(triangle);
+}
 void setLines(float x1, float y1, float x2, float y2, sf::RenderWindow &window, int peso)
 {
+    setDirection(x1,y1,x2,y2,window);
     std::string weight = std::to_string(peso);
     sf::Text text;
     sf::Font font;
-    if (!font.loadFromFile("Quicksand-Bold.ttf"))
-    {
-        std::cout << "error loading font" << std::endl;
-    }
+    if (!font.loadFromFile("Quicksand-Bold.ttf")){std::cout << "error loading font" << std::endl;}
     text.setString(weight);
     text.setFillColor(sf::Color(63, 63, 63));
     int posX = rectEquationX(x1, x2);
@@ -47,8 +61,8 @@ void setLines(float x1, float y1, float x2, float y2, sf::RenderWindow &window, 
     text.setCharacterSize(20);
     sf::Vertex line[] = {
         sf::Vertex(sf::Vector2f(x1 + 10, y1 + 10)),
-        sf::Vertex(sf::Vector2f(x2 + 10, y2 + 10))};
-
+        sf::Vertex(sf::Vector2f(x2 + 10, y2 + 10))
+    };
     window.draw(line, 10, sf::Lines);
     window.draw(text);
 }
