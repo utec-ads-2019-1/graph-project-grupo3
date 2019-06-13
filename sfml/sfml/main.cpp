@@ -17,14 +17,40 @@
 #include <sstream>
 #include <SFML/Window.hpp>
 
-void setLines(float x1, float y1, float x2, float y2, sf::RenderWindow &window)
+int rectEquationX(float x1, float x2)
 {
+    int posx = (x2 + x1) / 2;
+    return posx + 5;
+}
 
+int rectEquationY(float y1, float y2)
+{
+    int posy = (y2 + y1) / 2;
+    return posy + 5;
+}
+
+void setLines(float x1, float y1, float x2, float y2, sf::RenderWindow &window, int peso)
+{
+    std::string weight = std::to_string(peso);
+    sf::Text text;
+    sf::Font font;
+    if (!font.loadFromFile("Quicksand-Bold.ttf"))
+    {
+        std::cout << "error loading font" << std::endl;
+    }
+    text.setString(weight);
+    text.setFillColor(sf::Color(63, 63, 63));
+    int posX = rectEquationX(x1, x2);
+    int posY = rectEquationY(y1, y2);
+    text.setPosition(posX, posY);
+    text.setFont(font);
+    text.setCharacterSize(20);
     sf::Vertex line[] = {
         sf::Vertex(sf::Vector2f(x1 + 10, y1 + 10)),
         sf::Vertex(sf::Vector2f(x2 + 10, y2 + 10))};
 
     window.draw(line, 10, sf::Lines);
+    window.draw(text);
 }
 
 void setCircle(float x, float y, sf::RenderWindow &window, char i)
@@ -125,8 +151,8 @@ int main()
 
         for (int i = 0; i < pesos.size(); i++)
         {
-
-            setLines(edges.at(i)._posX1, edges.at(i)._posY1, edges.at(i)._posX2, edges.at(i)._posY2, window);
+            int peso = pesos.at(i);
+            setLines(edges.at(i)._posX1, edges.at(i)._posY1, edges.at(i)._posX2, edges.at(i)._posY2, window, peso);
         }
 
         window.display();
