@@ -17,34 +17,37 @@
 #include <sstream>
 #include <SFML/Window.hpp>
 
+void setLines(float x1, float y1, float x2, float y2, sf::RenderWindow &window)
+{
 
-void setLines(float x1,float y1,float x2,float y2,sf::RenderWindow& window){
-    
-    sf::Vertex line[]={
-        sf::Vertex(sf::Vector2f(x1,y1)),
-        sf::Vertex(sf::Vector2f(x2,y2))
-    };
-    
-    window.draw(line,10,sf::Lines);
+    sf::Vertex line[] = {
+        sf::Vertex(sf::Vector2f(x1 + 10, y1 + 10)),
+        sf::Vertex(sf::Vector2f(x2 + 10, y2 + 10))};
+
+    window.draw(line, 10, sf::Lines);
 }
 
-void setCircle(float x, float y,sf::RenderWindow& window,char i){
-        sf::CircleShape nodeDraw(360);
-        sf::Text text;
-        sf::Font font;
-        if(!font.loadFromFile("Quicksand-Bold.ttf")){std::cout << "error loading font"<< std::endl;}
-        text.setString(i);
-        text.setFillColor(sf::Color(0,255,0));
-        text.setPosition(x+10, y+10);
-        text.setFont(font);
-        text.setCharacterSize(20);
-        nodeDraw.setRadius(20);
-        nodeDraw.setFillColor(sf::Color(255, 255, 255));
-        nodeDraw.setOutlineColor(sf::Color(0,178,209));
-        nodeDraw.setOutlineThickness(5);
-        nodeDraw.setPosition(x, y);
-        window.draw(nodeDraw);
-        window.draw(text);
+void setCircle(float x, float y, sf::RenderWindow &window, char i)
+{
+    sf::CircleShape nodeDraw(360);
+    sf::Text text;
+    sf::Font font;
+    if (!font.loadFromFile("Quicksand-Bold.ttf"))
+    {
+        std::cout << "error loading font" << std::endl;
+    }
+    text.setString(i);
+    text.setFillColor(sf::Color(0, 255, 0));
+    text.setPosition(x + 9, y + 9);
+    text.setFont(font);
+    text.setCharacterSize(20);
+    nodeDraw.setRadius(20);
+    nodeDraw.setFillColor(sf::Color(255, 255, 255));
+    nodeDraw.setOutlineColor(sf::Color(0, 178, 209));
+    nodeDraw.setOutlineThickness(5);
+    nodeDraw.setPosition(x, y);
+    window.draw(nodeDraw);
+    window.draw(text);
 }
 
 int main()
@@ -52,48 +55,57 @@ int main()
 
     sf::RenderWindow window(sf::VideoMode(1200, 1200), ("Graph Project"));
     std::vector<node> nodes;
+    std::vector<edge> edges;
     std::vector<float> posx, posy;
     std::vector<float> pesos;
-    std::vector<int> conexion1;
-    std::vector<int> conexion2;
-    int valueNode1, rows, i;
+    std::vector<float> conexion1;
+    std::vector<float> conexion2;
+    int valueNode1, valuePeso, rows, i;
     std::string file = "../../input.txt", line;
     std::fstream f(file);
-    float valuex, valuey;
+    float valuex, valuey, valueX, valueY;
     if (f.is_open())
     {
         std::getline(f, line);
         std::string::size_type cz = 0;
         rows = stoi(line, &cz);
-        
+
         for (i = 0; i < rows; i++)
         {
             getline(f, line);
             std::stringstream s(line);
-            s >> valueNode1 >> valuex >> valuex;
+            s >> valueNode1 >> valuex >> valuey;
             posx.push_back(valuex);
             posy.push_back(valuey);
         }
-        getline(f,line);
-        
-        while(getline(f,line)){
-            std::stringstream s(line);
-            s>>valueNode1>>valuex>>valuey;
-            pesos.push_back(valueNode1);
-            conexion1.push_back(valuex);
-            conexion2.push_back(valuey);
+        getline(f, line);
+        while (getline(f, line))
+        {
+            std::stringstream j(line);
+            j >> valueX >> valueY >> valuePeso;
+            conexion1.push_back(valueX);
+            conexion2.push_back(valueY);
+            pesos.push_back(valuePeso);
         }
     }
+    for (int i = 0; i < pesos.size(); i++)
+    {
+        float pos1 = conexion1.at(i) - 1;
+        float pos2 = conexion2.at(i) - 1;
+        float x1 = posx.at(pos1);
+        float y1 = posy.at(pos1);
+        float x2 = posx.at(pos2);
+        float y2 = posy.at(pos2);
+        std::cout << "x1 " << x1 << "y1 " << y1 << "x2 " << x2 << "y2 " << y2 << std::endl;
+        edges.push_back(edge(x1, y1, x2, y2));
+    }
+
     for (int i = 0; i < rows; i++)
     {
         nodes.push_back(node(posx.at(i), posy.at(i)));
     }
-    for(int i = 0; i < conexion1.size();i++){
-        
-        
-    }
-    
-      while (window.isOpen())
+
+    while (window.isOpen())
     {
         sf::Event event;
         while (window.pollEvent(event))
@@ -103,17 +115,20 @@ int main()
                 window.close();
             }
         }
-        window.clear(sf::Color(0,202,165));
-      
-        
-      for(int i = 0;i < rows;i++){
-        char number = i + 97;
-        setCircle(nodes.at(i)._posX, nodes.at(i)._posY, window,number);
-        
-          
-        
-    }
-        setLines(100, 200, 300, 200, window);
+        window.clear(sf::Color(0, 202, 165));
+
+        for (int i = 0; i < rows; i++)
+        {
+            char number = i + 97;
+            setCircle(nodes.at(i)._posX, nodes.at(i)._posY, window, number);
+        }
+
+        for (int i = 0; i < pesos.size(); i++)
+        {
+
+            setLines(edges.at(i)._posX1, edges.at(i)._posY1, edges.at(i)._posX2, edges.at(i)._posY2, window);
+        }
+
         window.display();
     }
 

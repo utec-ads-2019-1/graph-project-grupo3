@@ -8,22 +8,24 @@
 
 #ifndef Header_h
 #define Header_h
-class node{
+class node
+{
 public:
     float _posX, _posY;
-    float edges[2];
-    float peso;
-    node(float x, float y): _posX(x), _posY(y)
-    {}
-    
-    node(float _peso,float node1,float node2){
-        edges[0] = node1;
-        edges[1] = node2;
-        peso = _peso;
+
+    node(float x, float y) : _posX(x), _posY(y)
+    {
     }
-    
-    float getX(){return _posX;}
-    float getY(){return _posY;}
+};
+
+class edge
+{
+public:
+    float _posX1, _posY1, _posX2, _posY2;
+
+    edge(float x1, float y1, float x2, float y2) : _posX1(x1), _posY1(y1), _posX2(x2), _posY2(y2)
+    {
+    }
 };
 
 #endif /* Header_h */

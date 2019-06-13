@@ -9,13 +9,13 @@
 #ifndef nodes_h
 #define nodes_h
 
-class node{
+class node
+{
 public:
-    double _Xpos,_Ypos;
-    
-    node(double x, double y): _Xpos(x),_Ypos(y){
-        
-        
+    double _Xpos, _Ypos;
+
+    node(double x, double y) : _Xpos(x), _Ypos(y)
+    {
     }
 };
 #endif /* nodes_h */
