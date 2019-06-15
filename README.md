@@ -14,6 +14,7 @@ g++ -std=c++17 main.cpp
 ```
 
 Run visual grafics
+Enter into sfml directory then:
 
 ```
 make graphs
