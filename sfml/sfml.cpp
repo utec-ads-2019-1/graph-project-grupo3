@@ -16,7 +16,7 @@
 #include <fstream>
 #include <sstream>
 #include <cmath>
-
+#include "button.h"
 #include <SFML/Window.hpp>
 
 int rectEquationX(float x1, float x2)
@@ -92,10 +92,9 @@ void setCircle(float x, float y, sf::RenderWindow &window, char i)
     window.draw(text);
 }
 
-int main()
+void GraphState()
 {
-
-    sf::RenderWindow window(sf::VideoMode(1200, 1200), ("Graph Project"));
+    sf::RenderWindow window(sf::VideoMode(1200, 1200), ("Graph"));
     std::vector<node> nodes;
     std::vector<edge> edges;
     std::vector<float> posx, posy;
@@ -138,7 +137,6 @@ int main()
         float y1 = posy.at(pos1);
         float x2 = posx.at(pos2);
         float y2 = posy.at(pos2);
-        std::cout << "x1 " << x1 << "y1 " << y1 << "x2 " << x2 << "y2 " << y2 << std::endl;
         edges.push_back(edge(x1, y1, x2, y2));
     }
 
@@ -173,6 +171,117 @@ int main()
 
         window.display();
     }
+}
 
+void Textos(std::string texto, sf::Font &font, sf::RenderWindow &window, int posX, int posY)
+{
+    sf::Text textTo;
+    textTo.setString(texto);
+    textTo.setCharacterSize(30);
+    textTo.setFillColor(sf::Color::Black);
+    textTo.setFont(font);
+    textTo.setPosition(posX, posY);
+    window.draw(textTo);
+}
+int main()
+{
+    sf::RenderWindow window(sf::VideoMode(1200, 1200), ("Graph"));
+    sf::Font font;
+    font.loadFromFile("Quicksand-Bold.ttf");
+    Button button1("Graph", {200, 50}, 20, sf::Color(157, 227, 158), sf::Color::Black);
+    button1.setPosition({500, 300});
+    button1.setFont(font);
+
+    Button button2("Dijkstra", {200, 50}, 20, sf::Color(157, 227, 158), sf::Color::Black);
+    button2.setPosition({500, 400});
+    button2.setFont(font);
+
+    Button button3("    A*", {200, 50}, 20, sf::Color(157, 227, 158), sf::Color::Black);
+    button3.setPosition({500, 500});
+    button3.setFont(font);
+
+    Button button4("Floyd-Warshall", {200, 50}, 13, sf::Color(157, 227, 158), sf::Color::Black);
+    button4.setPosition({500, 600});
+    button4.setFont(font);
+
+    Button button5("Bellman-Ford", {200, 50}, 15, sf::Color(157, 227, 158), sf::Color::Black);
+    button5.setPosition({500, 700});
+    button5.setFont(font);
+    while (window.isOpen())
+    {
+        sf::Event Event;
+        while (window.pollEvent(Event))
+        {
+            switch (Event.type)
+            {
+            case sf::Event::Closed:
+                window.close();
+            case sf::Event::MouseMoved:
+                if (button1.isMouseOver(window))
+                {
+                    button1.setBackColor(sf::Color(117, 158, 129));
+                }
+                else
+                {
+                    button1.setBackColor(sf::Color(157, 227, 158));
+                }
+                if (button2.isMouseOver(window))
+                {
+                    button2.setBackColor(sf::Color(117, 158, 129));
+                }
+                else
+                {
+                    button2.setBackColor(sf::Color(157, 227, 158));
+                }
+                if (button3.isMouseOver(window))
+                {
+                    button3.setBackColor(sf::Color(117, 158, 129));
+                }
+                else
+                {
+                    button3.setBackColor(sf::Color(157, 227, 158));
+                }
+                if (button4.isMouseOver(window))
+                {
+                    button4.setBackColor(sf::Color(117, 158, 129));
+                }
+                else
+                {
+                    button4.setBackColor(sf::Color(157, 227, 158));
+                }
+                if (button5.isMouseOver(window))
+                {
+                    button5.setBackColor(sf::Color(117, 158, 129));
+                }
+                else
+                {
+                    button5.setBackColor(sf::Color(157, 227, 158));
+                }
+                break;
+            case sf::Event::MouseButtonPressed:
+                if (button1.isMouseOver(window))
+                {
+                    GraphState();
+                }
+            default:
+                break;
+            }
+        }
+        window.clear(sf::Color(0, 202, 165));
+        Textos("Grafos Grupo 3", font, window, 500, 50);
+        Textos("Autores: ", font, window, 300, 100);
+        Textos("*", font, window, 300, 150);
+        Textos("Jhans Ubaldo", font, window, 340, 140);
+        Textos("*", font, window, 300, 190);
+        Textos("Giordano Alvitez", font, window, 340, 180);
+        Textos("*", font, window, 300, 230);
+        Textos("Antonio Toche", font, window, 340, 220);
+        button1.drawTo(window);
+        button2.drawTo(window);
+        button3.drawTo(window);
+        button4.drawTo(window);
+        button5.drawTo(window);
+        window.display();
+    }
     return 0;
 }
