@@ -30,7 +30,16 @@ float rectEquationY(float y1, float y2)
     float posy = (y2 + y1) / 2;
     return posy;
 }
-
+void Textos(std::string texto, sf::Font &font, sf::RenderWindow &window, int posX, int posY)
+{
+    sf::Text textTo;
+    textTo.setString(texto);
+    textTo.setCharacterSize(30);
+    textTo.setFillColor(sf::Color::Black);
+    textTo.setFont(font);
+    textTo.setPosition(posX, posY);
+    window.draw(textTo);
+}
 void setDirection(float x1, float y1, float x2, float y2, sf::RenderWindow &window)
 {
     sf::CircleShape triangle;
@@ -101,6 +110,8 @@ void setCircle(float x, float y, sf::RenderWindow &window, char i)
 void GraphState()
 {
     sf::RenderWindow window(sf::VideoMode(1200, 1200), ("Graph"));
+    sf::Font font;
+    font.loadFromFile("Quicksand-Bold.ttf");
     std::vector<node> nodes;
     std::vector<edge> edges;
     std::vector<float> posx, posy,pesos,conexion1,conexion2;
@@ -170,7 +181,7 @@ void GraphState()
             int peso = pesos.at(i);
             setLines(edges.at(i)._posX1, edges.at(i)._posY1, edges.at(i)._posX2, edges.at(i)._posY2, window, peso);
         }
-
+        Textos("Grafos grupo 3", font, window, 500, 50);
         window.display();
     }
 }
@@ -178,6 +189,8 @@ void GraphState()
 
 void Dijkstra()
 {
+    sf::Font font;
+    font.loadFromFile("Quicksand-Bold.ttf");
     sf::RenderWindow window(sf::VideoMode(1200, 1200), ("Dijkstra"));
     std::vector<node> nodes;
     std::vector<edge> edges;
@@ -253,7 +266,7 @@ void Dijkstra()
             int peso = pesos.at(i);
             setLines(edges.at(i)._posX1, edges.at(i)._posY1, edges.at(i)._posX2, edges.at(i)._posY2, window, peso);
         }
-
+        Textos("Dijkstra", font, window, 500, 50);
         window.display();
     }
 }
@@ -262,6 +275,8 @@ void Dijkstra()
 
 void A()
 {
+    sf::Font font;
+    font.loadFromFile("Quicksand-Bold.ttf");
     sf::RenderWindow window(sf::VideoMode(1200, 1200), ("A*"));
     std::vector<node> nodes;
     std::vector<edge> edges;
@@ -337,7 +352,7 @@ void A()
             int peso = pesos.at(i);
             setLines(edges.at(i)._posX1, edges.at(i)._posY1, edges.at(i)._posX2, edges.at(i)._posY2, window, peso);
         }
-
+        Textos("A*", font, window, 500, 50);
         window.display();
     }
 }
@@ -347,6 +362,8 @@ void A()
 
 void floydWarshall()
 {
+    sf::Font font;
+    font.loadFromFile("Quicksand-Bold.ttf");
     sf::RenderWindow window(sf::VideoMode(1200, 1200), ("Floyd Warshall"));
     std::vector<node> nodes;
     std::vector<edge> edges;
@@ -422,7 +439,7 @@ void floydWarshall()
             int peso = pesos.at(i);
             setLines(edges.at(i)._posX1, edges.at(i)._posY1, edges.at(i)._posX2, edges.at(i)._posY2, window, peso);
         }
-
+        Textos("Floyd Warshall", font, window, 500, 50);
         window.display();
     }
 }
@@ -434,6 +451,8 @@ void floydWarshall()
 
 void bellmanFord()
 {
+    sf::Font font;
+    font.loadFromFile("Quicksand-Bold.ttf");
     sf::RenderWindow window(sf::VideoMode(1200, 1200), ("Bellman Ford"));
     std::vector<node> nodes;
     std::vector<edge> edges;
@@ -459,7 +478,7 @@ void bellmanFord()
         {
         }
     }
-    std::string filebfs = "../bellmanFord.txt", bfsline;
+    std::string filebfs = "../bellmanford.txt", bfsline;
     std::fstream bfsf(filebfs);
     if(bfsf.is_open()){
         while(getline(bfsf,bfsline)){
@@ -509,21 +528,10 @@ void bellmanFord()
             int peso = pesos.at(i);
             setLines(edges.at(i)._posX1, edges.at(i)._posY1, edges.at(i)._posX2, edges.at(i)._posY2, window, peso);
         }
-
+        Textos("Bellman Ford", font, window, 500, 50);
+        Textos("Distancia desde Source", font, window, 500, 150);
         window.display();
     }
-}
-
-
-void Textos(std::string texto, sf::Font &font, sf::RenderWindow &window, int posX, int posY)
-{
-    sf::Text textTo;
-    textTo.setString(texto);
-    textTo.setCharacterSize(30);
-    textTo.setFillColor(sf::Color::Black);
-    textTo.setFont(font);
-    textTo.setPosition(posX, posY);
-    window.draw(textTo);
 }
 int main()
 {
