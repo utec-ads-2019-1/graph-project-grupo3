@@ -19,15 +19,15 @@
 #include "button.h"
 #include <SFML/Window.hpp>
 
-int rectEquationX(float x1, float x2)
+float rectEquationX(float x1, float x2)
 {
-    int posx = (x2 + x1) / 2;
+    float posx = (x2 + x1) / 2;
     return posx;
 }
 
-int rectEquationY(float y1, float y2)
+float rectEquationY(float y1, float y2)
 {
-    int posy = (y2 + y1) / 2;
+    float posy = (y2 + y1) / 2;
     return posy;
 }
 
@@ -35,11 +35,17 @@ void setDirection(float x1, float y1, float x2, float y2, sf::RenderWindow &wind
 {
     sf::CircleShape triangle;
     triangle.setRadius(10);
-    triangle.setPointCount(6);
-    int newX1 = rectEquationX(x1, x2);
-    int newY1 = rectEquationY(y1, y2);
-    int newPosY1 = (y2 + newY1) / 2;
-    int newPosX1 = (x2 + newX1) / 2;
+    triangle.setPointCount(3);
+    float newX1 = rectEquationX(x1, x2);
+    float newY1 = rectEquationY(y1, y2);
+    float newPosY1 = (y2 + newY1) / 2;
+    float newPosX1 = (x2 + newX1) / 2;
+    /* float pendient = (y2 - newPosY1) / (x2 - newPosX1);
+    pendient = atan(pendient);
+    sf::Rect<float> size = triangle.getGlobalBounds();
+    triangle.setOrigin(sf::Vector2f((size.width/2)/5,(size.height/2)/5));
+    std::cout << "Arco tang: " << pendient << std::endl;
+    triangle.setRotation(pendient*10);*/
     triangle.setPosition(newPosX1, newPosY1);
     triangle.setFillColor(sf::Color(255, 0, 0));
     triangle.setOutlineColor(sf::Color(0, 0, 255));
@@ -97,10 +103,7 @@ void GraphState()
     sf::RenderWindow window(sf::VideoMode(1200, 1200), ("Graph"));
     std::vector<node> nodes;
     std::vector<edge> edges;
-    std::vector<float> posx, posy;
-    std::vector<float> pesos;
-    std::vector<float> conexion1;
-    std::vector<float> conexion2;
+    std::vector<float> posx, posy,pesos,conexion1,conexion2;
     int valueNode1, valuePeso, rows, i;
     std::string file = "../input.txt", line;
     std::fstream f(file);
@@ -110,7 +113,6 @@ void GraphState()
         std::getline(f, line);
         std::string::size_type cz = 0;
         rows = stoi(line, &cz);
-
         for (i = 0; i < rows; i++)
         {
             getline(f, line);
@@ -172,6 +174,346 @@ void GraphState()
         window.display();
     }
 }
+
+
+void Dijkstra()
+{
+    sf::RenderWindow window(sf::VideoMode(1200, 1200), ("Dijkstra"));
+    std::vector<node> nodes;
+    std::vector<edge> edges;
+    std::vector<float> posx, posy,pesos,conexion1,conexion2;
+    int valueNode1, valuePeso, rows, i;
+    std::string file = "../input.txt", line;
+    std::fstream f(file);
+    float valuex, valuey, valueX, valueY;
+    if (f.is_open())
+    {
+        std::getline(f, line);
+        std::string::size_type cz = 0;
+        rows = stoi(line, &cz);
+        for (i = 0; i < rows; i++)
+        {
+            getline(f, line);
+            std::stringstream s(line);
+            s >> valueNode1 >> valuex >> valuey;
+            posx.push_back(valuex);
+            posy.push_back(valuey);
+        }
+        while (getline(f, line))
+        {
+        }
+    }
+    std::string filebfs = "../dijkstra.txt", bfsline;
+    std::fstream bfsf(filebfs);
+    if(bfsf.is_open()){
+        while(getline(bfsf,bfsline)){
+         std::stringstream j(bfsline);
+            j >> valueX >> valueY >> valuePeso;
+            conexion1.push_back(valueX);
+            conexion2.push_back(valueY);
+            pesos.push_back(valuePeso);
+        }
+    }
+    for (int i = 0; i < pesos.size(); i++)
+    {
+        float pos1 = conexion1.at(i) - 1;
+        float pos2 = conexion2.at(i) - 1;
+        float x1 = posx.at(pos1);
+        float y1 = posy.at(pos1);
+        float x2 = posx.at(pos2);
+        float y2 = posy.at(pos2);
+        edges.push_back(edge(x1, y1, x2, y2));
+    }
+
+    for (int i = 0; i < rows; i++)
+    {
+        nodes.push_back(node(posx.at(i), posy.at(i)));
+    }
+
+    while (window.isOpen())
+    {
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+            {
+                window.close();
+            }
+        }
+        window.clear(sf::Color(0, 202, 165));
+
+        for (int i = 0; i < rows; i++)
+        {
+            char number = i + 97;
+            setCircle(nodes.at(i)._posX, nodes.at(i)._posY, window, number);
+        }
+
+        for (int i = 0; i < pesos.size(); i++)
+        {
+            int peso = pesos.at(i);
+            setLines(edges.at(i)._posX1, edges.at(i)._posY1, edges.at(i)._posX2, edges.at(i)._posY2, window, peso);
+        }
+
+        window.display();
+    }
+}
+
+
+
+void A()
+{
+    sf::RenderWindow window(sf::VideoMode(1200, 1200), ("A*"));
+    std::vector<node> nodes;
+    std::vector<edge> edges;
+    std::vector<float> posx, posy,pesos,conexion1,conexion2;
+    int valueNode1, valuePeso, rows, i;
+    std::string file = "../input.txt", line;
+    std::fstream f(file);
+    float valuex, valuey, valueX, valueY;
+    if (f.is_open())
+    {
+        std::getline(f, line);
+        std::string::size_type cz = 0;
+        rows = stoi(line, &cz);
+        for (i = 0; i < rows; i++)
+        {
+            getline(f, line);
+            std::stringstream s(line);
+            s >> valueNode1 >> valuex >> valuey;
+            posx.push_back(valuex);
+            posy.push_back(valuey);
+        }
+        while (getline(f, line))
+        {
+        }
+    }
+    std::string filebfs = "../A.txt", bfsline;
+    std::fstream bfsf(filebfs);
+    if(bfsf.is_open()){
+        while(getline(bfsf,bfsline)){
+         std::stringstream j(bfsline);
+            j >> valueX >> valueY >> valuePeso;
+            conexion1.push_back(valueX);
+            conexion2.push_back(valueY);
+            pesos.push_back(valuePeso);
+        }
+    }
+    for (int i = 0; i < pesos.size(); i++)
+    {
+        float pos1 = conexion1.at(i) - 1;
+        float pos2 = conexion2.at(i) - 1;
+        float x1 = posx.at(pos1);
+        float y1 = posy.at(pos1);
+        float x2 = posx.at(pos2);
+        float y2 = posy.at(pos2);
+        edges.push_back(edge(x1, y1, x2, y2));
+    }
+
+    for (int i = 0; i < rows; i++)
+    {
+        nodes.push_back(node(posx.at(i), posy.at(i)));
+    }
+
+    while (window.isOpen())
+    {
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+            {
+                window.close();
+            }
+        }
+        window.clear(sf::Color(0, 202, 165));
+
+        for (int i = 0; i < rows; i++)
+        {
+            char number = i + 97;
+            setCircle(nodes.at(i)._posX, nodes.at(i)._posY, window, number);
+        }
+
+        for (int i = 0; i < pesos.size(); i++)
+        {
+            int peso = pesos.at(i);
+            setLines(edges.at(i)._posX1, edges.at(i)._posY1, edges.at(i)._posX2, edges.at(i)._posY2, window, peso);
+        }
+
+        window.display();
+    }
+}
+
+
+
+
+void floydWarshall()
+{
+    sf::RenderWindow window(sf::VideoMode(1200, 1200), ("Floyd Warshall"));
+    std::vector<node> nodes;
+    std::vector<edge> edges;
+    std::vector<float> posx, posy,pesos,conexion1,conexion2;
+    int valueNode1, valuePeso, rows, i;
+    std::string file = "../input.txt", line;
+    std::fstream f(file);
+    float valuex, valuey, valueX, valueY;
+    if (f.is_open())
+    {
+        std::getline(f, line);
+        std::string::size_type cz = 0;
+        rows = stoi(line, &cz);
+        for (i = 0; i < rows; i++)
+        {
+            getline(f, line);
+            std::stringstream s(line);
+            s >> valueNode1 >> valuex >> valuey;
+            posx.push_back(valuex);
+            posy.push_back(valuey);
+        }
+        while (getline(f, line))
+        {
+        }
+    }
+    std::string filebfs = "../floydWarshall.txt", bfsline;
+    std::fstream bfsf(filebfs);
+    if(bfsf.is_open()){
+        while(getline(bfsf,bfsline)){
+         std::stringstream j(bfsline);
+            j >> valueX >> valueY >> valuePeso;
+            conexion1.push_back(valueX);
+            conexion2.push_back(valueY);
+            pesos.push_back(valuePeso);
+        }
+    }
+    for (int i = 0; i < pesos.size(); i++)
+    {
+        float pos1 = conexion1.at(i) - 1;
+        float pos2 = conexion2.at(i) - 1;
+        float x1 = posx.at(pos1);
+        float y1 = posy.at(pos1);
+        float x2 = posx.at(pos2);
+        float y2 = posy.at(pos2);
+        edges.push_back(edge(x1, y1, x2, y2));
+    }
+
+    for (int i = 0; i < rows; i++)
+    {
+        nodes.push_back(node(posx.at(i), posy.at(i)));
+    }
+
+    while (window.isOpen())
+    {
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+            {
+                window.close();
+            }
+        }
+        window.clear(sf::Color(0, 202, 165));
+
+        for (int i = 0; i < rows; i++)
+        {
+            char number = i + 97;
+            setCircle(nodes.at(i)._posX, nodes.at(i)._posY, window, number);
+        }
+
+        for (int i = 0; i < pesos.size(); i++)
+        {
+            int peso = pesos.at(i);
+            setLines(edges.at(i)._posX1, edges.at(i)._posY1, edges.at(i)._posX2, edges.at(i)._posY2, window, peso);
+        }
+
+        window.display();
+    }
+}
+
+
+
+
+
+
+void bellmanFord()
+{
+    sf::RenderWindow window(sf::VideoMode(1200, 1200), ("Bellman Ford"));
+    std::vector<node> nodes;
+    std::vector<edge> edges;
+    std::vector<float> posx, posy,pesos,conexion1,conexion2;
+    int valueNode1, valuePeso, rows, i;
+    std::string file = "../input.txt", line;
+    std::fstream f(file);
+    float valuex, valuey, valueX, valueY;
+    if (f.is_open())
+    {
+        std::getline(f, line);
+        std::string::size_type cz = 0;
+        rows = stoi(line, &cz);
+        for (i = 0; i < rows; i++)
+        {
+            getline(f, line);
+            std::stringstream s(line);
+            s >> valueNode1 >> valuex >> valuey;
+            posx.push_back(valuex);
+            posy.push_back(valuey);
+        }
+        while (getline(f, line))
+        {
+        }
+    }
+    std::string filebfs = "../bellmanFord.txt", bfsline;
+    std::fstream bfsf(filebfs);
+    if(bfsf.is_open()){
+        while(getline(bfsf,bfsline)){
+         std::stringstream j(bfsline);
+            j >> valueX >> valueY >> valuePeso;
+            conexion1.push_back(valueX);
+            conexion2.push_back(valueY);
+            pesos.push_back(valuePeso);
+        }
+    }
+    for (int i = 0; i < pesos.size(); i++)
+    {
+        float pos1 = conexion1.at(i) - 1;
+        float pos2 = conexion2.at(i) - 1;
+        float x1 = posx.at(pos1);
+        float y1 = posy.at(pos1);
+        float x2 = posx.at(pos2);
+        float y2 = posy.at(pos2);
+        edges.push_back(edge(x1, y1, x2, y2));
+    }
+
+    for (int i = 0; i < rows; i++)
+    {
+        nodes.push_back(node(posx.at(i), posy.at(i)));
+    }
+
+    while (window.isOpen())
+    {
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+            {
+                window.close();
+            }
+        }
+        window.clear(sf::Color(0, 202, 165));
+
+        for (int i = 0; i < rows; i++)
+        {
+            char number = i + 97;
+            setCircle(nodes.at(i)._posX, nodes.at(i)._posY, window, number);
+        }
+
+        for (int i = 0; i < pesos.size(); i++)
+        {
+            int peso = pesos.at(i);
+            setLines(edges.at(i)._posX1, edges.at(i)._posY1, edges.at(i)._posX2, edges.at(i)._posY2, window, peso);
+        }
+
+        window.display();
+    }
+}
+
 
 void Textos(std::string texto, sf::Font &font, sf::RenderWindow &window, int posX, int posY)
 {
@@ -262,6 +604,22 @@ int main()
                 if (button1.isMouseOver(window))
                 {
                     GraphState();
+                }
+                if (button2.isMouseOver(window))
+                {
+                    Dijkstra();
+                }
+                if (button3.isMouseOver(window))
+                {
+                    A();
+                }
+                if (button4.isMouseOver(window))
+                {
+                    floydWarshall();
+                }
+                 if (button4.isMouseOver(window))
+                {
+                    bellmanFord();
                 }
             default:
                 break;
