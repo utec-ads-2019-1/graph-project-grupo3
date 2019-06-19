@@ -48,7 +48,7 @@ int main() {
   //cout<<g.stronglyConnectedComponent()<<endl;
   //cout<<g.bipartiteGraph()<<endl;
   //g.print();
-  auto bellman =  g.BellmanFord(3);
+  auto bellman =  g.BellmanFord(0);
   bellman->print();
    
   //auto resultado = g.DFS(2);

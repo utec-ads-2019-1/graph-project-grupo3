@@ -11,6 +11,7 @@
 #include<map>
 #include <set>
 #include<queue>
+#include <stdexcept>
 #include<stack>
 #include <limits>
 #include "node.h"
@@ -729,36 +730,24 @@ class Graph {
           }
         }
 
-        void printArr(int dist[], int n) 
-        { 
-            printf("Vertex   Distance from Source\n"); 
-            for (int i = 0; i < n; ++i) 
-                printf("%d \t\t %d\n", i, dist[i]); 
-        }
-        Graph* BellmanFord(int src)
+        Graph* BellmanFord(int begining)
         {
-          int countV = 0, countE = 0;
+          int countV = 0;
           auto BellmanFordGraph = new Graph(dir, pond);
           for (ni = nodes.begin(); ni != nodes.end(); ni++)
           {
             BellmanFordGraph->insertNode((*ni)->getData(), (*ni)->getX(), (*ni)->getY());
             countV++;
           }
-          ei = edges.begin();
-          while (ei != edges.end())
+          int numberOfVer = countV;
+          int dist[numberOfVer];
+          for (int i = 0; i < numberOfVer; i++)
           {
-            countE++;
-            ei++;
-          }
-          int V = countV;
-          int E = countE;
-          int dist[V];
-          for(int i = 0; i < V;i++){
             dist[i] = max_int;
           }
-          dist[src] = 0;
-          
-          for(int i = 0; i <= V-1;i++)
+          dist[begining] = 0;
+
+          for (int i = 0; i <= numberOfVer - 1; i++)
           {
             ei = edges.begin();
             while (ei != edges.end())
@@ -774,13 +763,26 @@ class Graph {
               ei++;
             }
           }
-          for(int counter = 0; counter < V; counter++)
+
+          ei = edges.begin();
+          while (ei != edges.end())
           {
-            BellmanFordGraph->insertEdge(dist[counter], src, counter);
+            node **arr = (*ei)->getNodes();
+            int u = arr[0]->getData();
+            int v = arr[1]->getData();
+            int weight = (*ei)->getData();
+            if (dist[u] != max_int && (dist[u] + weight) < dist[v])
+            {
+              throw std::out_of_range("Negatives Cycles.");
+            }
+            ei++;
           }
-          
-          printArr(dist,V);
-         return BellmanFordGraph;
+
+          for (int counter = 0; counter < numberOfVer; counter++)
+          {
+            BellmanFordGraph->insertEdge(dist[counter], begining, counter);
+          }
+          return BellmanFordGraph;
         }
 
 private : NodeSeq nodes;
