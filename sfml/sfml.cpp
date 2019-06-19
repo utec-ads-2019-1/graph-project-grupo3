@@ -617,7 +617,7 @@ int main()
                 {
                     floydWarshall();
                 }
-                 if (button4.isMouseOver(window))
+                if (button5.isMouseOver(window))
                 {
                     bellmanFord();
                 }
