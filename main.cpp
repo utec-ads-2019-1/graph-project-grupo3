@@ -41,18 +41,23 @@ int main() {
 
 
 */
-  cout<<"Ingresa nombre de file::";
-  cin>>file;
+  cout<<"Ingresa nombre de file::\n";
+  file = "input.txt";
   g.readFile(file);
   //g.print();
   //cout<<g.stronglyConnectedComponent()<<endl;
   //cout<<g.bipartiteGraph()<<endl;
-  g.print();
-  auto resultado = g.DFS(2);
-  resultado->print();
-
+  //g.print();
+  auto bellman =  g.BellmanFord(3);
+  bellman->print();
+   
+  //auto resultado = g.DFS(2);
+  //resultado->print();
+  //resultado->writeOn("Bfs.txt");
   //g.kruskal();
   //g.prim(2);
+
+
   cout<<"es bipartito "<<g.conexo()<<endl;
 
   //Read<int,int> read(file);
