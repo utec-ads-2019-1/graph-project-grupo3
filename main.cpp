@@ -50,15 +50,14 @@ int main() {
   //g.print();
   auto bellman =  g.BellmanFord(0);
   bellman->print();
-   
-  //auto resultado = g.DFS(2);
-  //resultado->print();
-  //resultado->writeOn("Bfs.txt");
-  //g.kruskal();
-  //g.prim(2);
+  //bellman->writeOn("bellmanford.txt");
+      //auto resultado = g.DFS(2);
+      //resultado->print();
+      //resultado->writeOn("Bfs.txt");
+      //g.kruskal();
+      //g.prim(2);
 
-
-  cout<<"es bipartito "<<g.conexo()<<endl;
+  cout << "es bipartito " << g.conexo() << endl;
 
   //Read<int,int> read(file);
   //g=read.getGraph();

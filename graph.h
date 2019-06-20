@@ -781,6 +781,11 @@ class Graph {
           for (int counter = 0; counter < numberOfVer; counter++)
           {
             BellmanFordGraph->insertEdge(dist[counter], begining, counter);
+           /* auto f = getNode(counter);
+            vector<node*> list = f->getNodesAdj();
+            for(auto j = list.begin(); j !=  list.end(); j++){
+                cout << (*j);
+            }*/
           }
           return BellmanFordGraph;
         }
