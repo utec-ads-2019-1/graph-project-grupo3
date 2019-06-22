@@ -729,39 +729,25 @@ class Graph {
             ei++;
           }
         }
-
-<<<<<<< HEAD
+ 
         Graph* BellmanFord(int begining)
         {
           int countV = 0;
-=======
-        Graph* BellmanFord(int src)
-        {
-          int countV = 0;
-          map<node*,node*> edgesChoose;
->>>>>>> f724667
           auto BellmanFordGraph = new Graph(dir, pond);
           for (ni = nodes.begin(); ni != nodes.end(); ni++)
           {
             BellmanFordGraph->insertNode((*ni)->getData(), (*ni)->getX(), (*ni)->getY());
             countV++;
           }
-<<<<<<< HEAD
-          int numberOfVer = countV;
-          int dist[numberOfVer];
-          for (int i = 0; i < numberOfVer; i++)
-          {
-=======
 
           int V = countV;
           int dist[V];
-          for(int i = 0; i < V;i++){
->>>>>>> f724667
+          for(int i = 1; i <= V;i++){
             dist[i] = max_int;
           }
           dist[begining] = 0;
 
-          for (int i = 0; i <= numberOfVer - 1; i++)
+          for (int i = 1; i <= V - 1; i++)
           {
             ei = edges.begin();
             while (ei != edges.end())
@@ -770,55 +756,23 @@ class Graph {
               int u = arr[0]->getData();
               int v = arr[1]->getData();
               int weight = (*ei)->getData();
-              if (dist[u] != max_int && (dist[u] + weight) < dist[v])
+              if (dist[u] != max_int)
               {
-                dist[v] = dist[u] + weight;
+                if ((dist[u] + weight) < dist[v]){
+                  dist[v] = dist[u] + weight;
+                  BellmanFordGraph->insertEdge((*ei)->getData(), arr[0]->getData(), arr[1]->getData());
+                }
               }
               ei++;
             }
           }
-<<<<<<< HEAD
-
-          ei = edges.begin();
-          while (ei != edges.end())
-          {
-            node **arr = (*ei)->getNodes();
-            int u = arr[0]->getData();
-            int v = arr[1]->getData();
-            int weight = (*ei)->getData();
-            if (dist[u] != max_int && (dist[u] + weight) < dist[v])
+          
+          for(int i = 1; i <= V; i++)
             {
-              throw std::out_of_range("Negatives Cycles.");
+              cout << "From: " << begining << " to: " << i << " with: " << dist[i] << endl;
             }
-            ei++;
-          }
 
-          for (int counter = 0; counter < numberOfVer; counter++)
-          {
-            BellmanFordGraph->insertEdge(dist[counter], begining, counter);
-           /* auto f = getNode(counter);
-            vector<node*> list = f->getNodesAdj();
-            for(auto j = list.begin(); j !=  list.end(); j++){
-                cout << (*j);
-            }*/
-          }
           return BellmanFordGraph;
-=======
-          for(int i=0;i<V;i++){
-            cout << dist[i] << endl;
-          }
-          for(int counter = 0; counter < V; counter++)
-          {
-            BellmanFordGraph->insertEdge(dist[counter], src, counter);
-            auto j = getNode(counter);
-            vector<node *> lista = j->getNodesAdj();
-            for(auto f = lista.begin(); f!= lista.end();f++){
-              cout << (*f)->getData() << " ";
-            }
-            cout << "\n" ;
-          }
-         return BellmanFordGraph;
->>>>>>> f724667
         }
 
 private : NodeSeq nodes;
