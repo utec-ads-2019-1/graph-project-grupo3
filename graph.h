@@ -717,6 +717,7 @@ class Graph {
             return dict[value];
           return nullptr;
         }
+
         void writeOn(string nameOf)
         {
           ofstream File;
@@ -729,8 +730,8 @@ class Graph {
             ei++;
           }
         }
- 
-        Graph* BellmanFord(int begining)
+
+        Graph *BellmanFord(int begining)
         {
           int countV = 0;
           auto BellmanFordGraph = new Graph(dir, pond);
@@ -742,12 +743,13 @@ class Graph {
 
           int V = countV;
           int dist[V];
+
           for(int i = 1; i <= V;i++){
             dist[i] = max_int;
           }
           dist[begining] = 0;
-
-          for (int i = 1; i <= V - 1; i++)
+          vector<node *> hasEdge;
+          for (int i = 0; i <= V - 1; i++)
           {
             ei = edges.begin();
             while (ei != edges.end())
@@ -760,20 +762,25 @@ class Graph {
               {
                 if ((dist[u] + weight) < dist[v]){
                   dist[v] = dist[u] + weight;
-                  BellmanFordGraph->insertEdge((*ei)->getData(), arr[0]->getData(), arr[1]->getData());
+                  if(find(hasEdge.begin(),hasEdge.end(),arr[1])==hasEdge.end()){
+                    hasEdge.push_back(arr[1]);
+                    BellmanFordGraph->insertEdge((*ei)->getData(), arr[0]->getData(), arr[1]->getData());
+                  }
                 }
               }
               ei++;
             }
           }
-          
+
           for(int i = 1; i <= V; i++)
-            {
-              cout << "From: " << begining << " to: " << i << " with: " << dist[i] << endl;
-            }
+          {
+            cout << "From: " << begining << " go to: " << i << " with: " << dist[i] << endl;
+          }
 
           return BellmanFordGraph;
         }
+
+      
 
 private : NodeSeq nodes;
         EdgeSeq edges;
