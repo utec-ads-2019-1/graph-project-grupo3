@@ -50,6 +50,7 @@ int main() {
   //g.print();
   auto bellman =  g.BellmanFord(0);
   bellman->print();
+<<<<<<< HEAD
   //bellman->writeOn("bellmanford.txt");
       //auto resultado = g.DFS(2);
       //resultado->print();
@@ -58,6 +59,18 @@ int main() {
       //g.prim(2);
 
   cout << "es bipartito " << g.conexo() << endl;
+=======
+  bellman->writeOn("bellmanford.txt");
+   
+  //auto resultado = g.DFS(2);
+  //resultado->print();
+  //resultado->writeOn("Bfs.txt");
+  //g.kruskal();
+  //g.prim(2);
+
+
+  cout<<"es bipartito "<<g.conexo()<<endl;
+>>>>>>> f724667
 
   //Read<int,int> read(file);
   //g=read.getGraph();
