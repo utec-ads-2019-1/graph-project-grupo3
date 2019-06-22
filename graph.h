@@ -762,10 +762,10 @@ class Graph {
               {
                 if ((dist[u] + weight) < dist[v]){
                   dist[v] = dist[u] + weight;
-                  if(find(hasEdge.begin(),hasEdge.end(),arr[1])==hasEdge.end()){
-                    hasEdge.push_back(arr[1]);
+                 // if(find(hasEdge.begin(),hasEdge.end(),arr[1])==hasEdge.end()){
+                   // hasEdge.push_back(arr[1]);
                     BellmanFordGraph->insertEdge((*ei)->getData(), arr[0]->getData(), arr[1]->getData());
-                  }
+                  //}
                 }
               }
               ei++;
