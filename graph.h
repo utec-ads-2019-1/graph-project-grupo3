@@ -729,29 +729,18 @@ class Graph {
           }
         }
 
-        void printArr(int dist[], int n) 
-        { 
-            printf("Vertex   Distance from Source\n"); 
-            for (int i = 0; i < n; ++i) 
-                printf("%d \t\t %d\n", i, dist[i]); 
-        }
         Graph* BellmanFord(int src)
         {
-          int countV = 0, countE = 0;
+          int countV = 0;
+          map<node*,node*> edgesChoose;
           auto BellmanFordGraph = new Graph(dir, pond);
           for (ni = nodes.begin(); ni != nodes.end(); ni++)
           {
             BellmanFordGraph->insertNode((*ni)->getData(), (*ni)->getX(), (*ni)->getY());
             countV++;
           }
-          ei = edges.begin();
-          while (ei != edges.end())
-          {
-            countE++;
-            ei++;
-          }
+
           int V = countV;
-          int E = countE;
           int dist[V];
           for(int i = 0; i < V;i++){
             dist[i] = max_int;
@@ -774,12 +763,19 @@ class Graph {
               ei++;
             }
           }
+          for(int i=0;i<V;i++){
+            cout << dist[i] << endl;
+          }
           for(int counter = 0; counter < V; counter++)
           {
             BellmanFordGraph->insertEdge(dist[counter], src, counter);
+            auto j = getNode(counter);
+            vector<node *> lista = j->getNodesAdj();
+            for(auto f = lista.begin(); f!= lista.end();f++){
+              cout << (*f)->getData() << " ";
+            }
+            cout << "\n" ;
           }
-          
-          printArr(dist,V);
          return BellmanFordGraph;
         }
 
