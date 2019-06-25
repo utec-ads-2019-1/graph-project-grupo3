@@ -11,12 +11,13 @@
 #include<map>
 #include <set>
 #include<queue>
+#include <stdexcept>
 #include<stack>
-
+#include <limits>
 #include "node.h"
 #include "edge.h"
 #include "dsjset.h"
-
+#define max_int 214748364
 using namespace std;
 template <typename GV,typename GE>
 class Graph {
@@ -210,11 +211,12 @@ class Graph {
                 ei = edges.begin();
                 for (auto i = listAdjs.begin(); i != listAdjs.end() && ei != edges.end(); ++i, ++ei)
                 {
-
-                    if (!frequented[(*i)->getData() - 1]){
-                        bfsGraph->insertEdge((*ei)->getData(), currNode->getData(), (*i)->getData());
-                        container.push(*i);
-                        frequented[(*i)->getData() - 1] = true;
+                  node **arr = (*ei)->getNodes();
+                  if (!frequented[(*i)->getData() - 1])
+                  {
+                    bfsGraph->insertEdge((*ei)->getData(), currNode->getData(), (*i)->getData());
+                    container.push(*i);
+                    frequented[(*i)->getData() - 1] = true;
                     }
                 }
                 frequented[currNode->getData() - 1] = true;
@@ -719,8 +721,71 @@ class Graph {
           return nullptr;
         }
 
-    private:
-        NodeSeq nodes;
+        void writeOn(string nameOf)
+        {
+          ofstream File;
+          File.open(nameOf);
+          ei = edges.begin();
+          while (ei != edges.end())
+          {
+            node **arr = (*ei)->getNodes();
+            File << arr[0]->getData() << " " << arr[1]->getData() << " " << (*ei)->getData() << "\n";
+            ei++;
+          }
+        }
+
+        Graph *BellmanFord(int begining)
+        {
+          int countV = 0;
+          auto BellmanFordGraph = new Graph(dir, pond);
+          for (ni = nodes.begin(); ni != nodes.end(); ni++)
+          {
+            BellmanFordGraph->insertNode((*ni)->getData(), (*ni)->getX(), (*ni)->getY());
+            countV++;
+          }
+
+          int V = countV;
+          int dist[V];
+
+          for(int i = 1; i <= V;i++){
+            dist[i] = max_int;
+          }
+          dist[begining] = 0;
+          vector<node *> hasEdge;
+          for (int i = 0; i <= V - 1; i++)
+          {
+            ei = edges.begin();
+            while (ei != edges.end())
+            {
+              node **arr = (*ei)->getNodes();
+              int u = arr[0]->getData();
+              int v = arr[1]->getData();
+              int weight = (*ei)->getData();
+              if (dist[u] != max_int)
+              {
+                if ((dist[u] + weight) < dist[v]){
+                  dist[v] = dist[u] + weight;
+                 // if(find(hasEdge.begin(),hasEdge.end(),arr[1])==hasEdge.end()){
+                   // hasEdge.push_back(arr[1]);
+                    BellmanFordGraph->insertEdge((*ei)->getData(), arr[0]->getData(), arr[1]->getData());
+                  //}
+                }
+              }
+              ei++;
+            }
+          }
+
+          for(int i = 1; i <= V; i++)
+          {
+            cout << "From: " << begining << " go to: " << i << " with: " << dist[i] << endl;
+          }
+
+          return BellmanFordGraph;
+        }
+
+      
+
+private : NodeSeq nodes;
         EdgeSeq edges;
         dictNode dict;
         dictEdges dictE;
