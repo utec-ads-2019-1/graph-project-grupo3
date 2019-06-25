@@ -42,7 +42,7 @@ int main() {
 
 */
   cout<<"Ingresa nombre de file::\n";
-  file = "input.txt";
+  cin >> file;
   g.readFile(file);
   //g.print();
   //cout<<g.stronglyConnectedComponent()<<endl;
