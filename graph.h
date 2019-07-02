@@ -601,6 +601,9 @@ class Graph {
           }
         }
 
+
+
+
         void print(){
           ni=nodes.begin();
           cout <<"==========================";
@@ -929,7 +932,7 @@ class Graph {
                                     setDst.erase(setDst.find(make_pair(dist[int(v) -96-1], v)));
                                 dist[int(v) -96- 1] = dist[int(u) - 96-1] + weight;
                                 setDst.insert(make_pair(dist[int(v) -96- 1], v));
-                                resultGraph.insertEdge(weight, char(u + 97), char(v + 97));
+                                resultGraph.insertEdge(weight, char(u), char(v));
                             }
                         }
                         else
