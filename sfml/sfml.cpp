@@ -535,7 +535,7 @@ void bellmanFord(bool IsDir, bool isChar)
 }
 int main()
 {
-    bool isDir = false, isChar = false;
+    bool isDir = true, isChar = false;
     sf::RenderWindow window(sf::VideoMode(1200, 1200), ("Graph"));
     sf::Font font;
     font.loadFromFile("Quicksand-Bold.ttf");

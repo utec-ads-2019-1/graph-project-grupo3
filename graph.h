@@ -527,7 +527,7 @@ class Graph {
               cout<<endl;
             }
         }
-
+/*
         void aStar(){
           if(stateFloyd)
             return;
@@ -558,7 +558,7 @@ class Graph {
           for(i=0;i<size;i++)
             pthread_join(workers[i],NULL);
 
-        }
+        }*/
         GE pitagoras(node* n1,node* n2){
           return sqrt(pow(n1->getX()-n2->getX(),2)+pow(n1->getY()-n2->getY(),2));
         }
