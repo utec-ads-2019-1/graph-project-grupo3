@@ -743,12 +743,12 @@ class Graph {
 
           int V = countV;
           int dist[V];
-
           for(int i = 1; i <= V;i++){
             dist[i] = max_int;
           }
+
           dist[begining] = 0;
-          vector<node *> hasEdge;
+          int count = 0;
           for (int i = 0; i <= V - 1; i++)
           {
             ei = edges.begin();
@@ -762,10 +762,28 @@ class Graph {
               {
                 if ((dist[u] + weight) < dist[v]){
                   dist[v] = dist[u] + weight;
-                 // if(find(hasEdge.begin(),hasEdge.end(),arr[1])==hasEdge.end()){
-                   // hasEdge.push_back(arr[1]);
                     BellmanFordGraph->insertEdge((*ei)->getData(), arr[0]->getData(), arr[1]->getData());
-                  //}
+                  }
+                }
+              }
+              ei++;
+            }
+      
+
+          for (int i = 0; i <= V - 1; i++)
+          {
+            ei = edges.begin();
+            while (ei != edges.end())
+            {
+              node **arr = (*ei)->getNodes();
+              int u = arr[0]->getData();
+              int v = arr[1]->getData();
+              int weight = (*ei)->getData();
+              if (dist[u] != max_int)
+              {
+                if ((dist[u] + weight) < dist[v])
+                {
+                  throw out_of_range("Contiene ciclos negativos");
                 }
               }
               ei++;
