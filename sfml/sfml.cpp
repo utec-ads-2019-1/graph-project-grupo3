@@ -60,9 +60,11 @@ void setDirection(float x1, float y1, float x2, float y2, sf::RenderWindow &wind
     triangle.setOutlineColor(sf::Color(0, 0, 255));
     window.draw(triangle);
 }
-void setLines(float x1, float y1, float x2, float y2, sf::RenderWindow &window, int peso)
+void setLines(float x1, float y1, float x2, float y2, sf::RenderWindow &window, int peso, bool isDir)
 {
-    setDirection(x1, y1, x2, y2, window);
+    if(isDir){
+        setDirection(x1, y1, x2, y2, window);
+    }
     std::string weight = std::to_string(peso);
     sf::Text text;
     sf::Font font;
@@ -107,7 +109,7 @@ void setCircle(float x, float y, sf::RenderWindow &window, char i)
     window.draw(text);
 }
 
-void GraphState()
+void GraphState(bool IsDir, bool isChar)
 {
     sf::RenderWindow window(sf::VideoMode(1280, 720), ("Graph"));
     sf::Font font;
@@ -172,22 +174,22 @@ void GraphState()
 
         for (int i = 0; i < rows; i++)
         {
-            char number = i + 97;
+            char number;
+            isChar == true ? number = i : number = i + 97;
             setCircle(nodes.at(i)._posX, nodes.at(i)._posY, window, number);
         }
 
         for (int i = 0; i < pesos.size(); i++)
         {
             int peso = pesos.at(i);
-            setLines(edges.at(i)._posX1, edges.at(i)._posY1, edges.at(i)._posX2, edges.at(i)._posY2, window, peso);
+            setLines(edges.at(i)._posX1, edges.at(i)._posY1, edges.at(i)._posX2, edges.at(i)._posY2, window, peso, IsDir);
         }
         Textos("Grafos grupo 3", font, window, 500, 50);
         window.display();
     }
 }
 
-
-void Dijkstra()
+void Dijkstra(bool IsDir, bool isChar)
 {
     sf::Font font;
     font.loadFromFile("Quicksand-Bold.ttf");
@@ -257,23 +259,22 @@ void Dijkstra()
 
         for (int i = 0; i < rows; i++)
         {
-            char number = i + 97;
+            char number;
+            isChar == true ? number = i : number = i + 97;
             setCircle(nodes.at(i)._posX, nodes.at(i)._posY, window, number);
         }
 
         for (int i = 0; i < pesos.size(); i++)
         {
             int peso = pesos.at(i);
-            setLines(edges.at(i)._posX1, edges.at(i)._posY1, edges.at(i)._posX2, edges.at(i)._posY2, window, peso);
+            setLines(edges.at(i)._posX1, edges.at(i)._posY1, edges.at(i)._posX2, edges.at(i)._posY2, window, peso, IsDir);
         }
         Textos("Dijkstra", font, window, 500, 50);
         window.display();
     }
 }
 
-
-
-void A()
+void A(bool IsDir, bool isChar)
 {
     sf::Font font;
     font.loadFromFile("Quicksand-Bold.ttf");
@@ -343,14 +344,15 @@ void A()
 
         for (int i = 0; i < rows; i++)
         {
-            char number = i + 97;
+            char number;
+            isChar == true ? number = i : number = i + 97;
             setCircle(nodes.at(i)._posX, nodes.at(i)._posY, window, number);
         }
 
         for (int i = 0; i < pesos.size(); i++)
         {
             int peso = pesos.at(i);
-            setLines(edges.at(i)._posX1, edges.at(i)._posY1, edges.at(i)._posX2, edges.at(i)._posY2, window, peso);
+            setLines(edges.at(i)._posX1, edges.at(i)._posY1, edges.at(i)._posX2, edges.at(i)._posY2, window, peso, IsDir);
         }
         Textos("A*", font, window, 500, 50);
         window.display();
@@ -359,8 +361,7 @@ void A()
 
 
 
-
-void floydWarshall()
+void floydWarshall(bool IsDir, bool isChar)
 {
     sf::Font font;
     font.loadFromFile("Quicksand-Bold.ttf");
@@ -430,14 +431,15 @@ void floydWarshall()
 
         for (int i = 0; i < rows; i++)
         {
-            char number = i + 97;
+            char number;
+            isChar == true ? number = i : number = i + 97;
             setCircle(nodes.at(i)._posX, nodes.at(i)._posY, window, number);
         }
 
         for (int i = 0; i < pesos.size(); i++)
         {
             int peso = pesos.at(i);
-            setLines(edges.at(i)._posX1, edges.at(i)._posY1, edges.at(i)._posX2, edges.at(i)._posY2, window, peso);
+            setLines(edges.at(i)._posX1, edges.at(i)._posY1, edges.at(i)._posX2, edges.at(i)._posY2, window, peso, IsDir);
         }
         Textos("Floyd Warshall", font, window, 500, 50);
         window.display();
@@ -446,10 +448,7 @@ void floydWarshall()
 
 
 
-
-
-
-void bellmanFord()
+void bellmanFord(bool IsDir, bool isChar)
 {
     sf::Font font;
     font.loadFromFile("Quicksand-Bold.ttf");
@@ -519,14 +518,15 @@ void bellmanFord()
 
         for (int i = 0; i < rows; i++)
         {
-            char number = i + 97;
+            char number;
+            isChar == true ? number = i : number = i + 97;
             setCircle(nodes.at(i)._posX, nodes.at(i)._posY, window, number);
         }
 
         for (int i = 0; i < pesos.size(); i++)
         {
             int peso = pesos.at(i);
-            setLines(edges.at(i)._posX1, edges.at(i)._posY1, edges.at(i)._posX2, edges.at(i)._posY2, window, peso);
+            setLines(edges.at(i)._posX1, edges.at(i)._posY1, edges.at(i)._posX2, edges.at(i)._posY2, window, peso, IsDir);
         }
         Textos("Bellman Ford", font, window, 500, 50);
         Textos("Distancia desde Source", font, window, 500, 150);
@@ -535,7 +535,8 @@ void bellmanFord()
 }
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(1280, 720), ("Graph"));
+    bool isDir = true, isChar = false;
+    sf::RenderWindow window(sf::VideoMode(1200, 1200), ("Graph"));
     sf::Font font;
     font.loadFromFile("Quicksand-Bold.ttf");
     Button button1("Graph", {200, 50}, 20, sf::Color(157, 227, 158), sf::Color::Black);
@@ -611,23 +612,23 @@ int main()
             case sf::Event::MouseButtonPressed:
                 if (button1.isMouseOver(window))
                 {
-                    GraphState();
+                    GraphState(isDir,isChar);
                 }
                 if (button2.isMouseOver(window))
                 {
-                    Dijkstra();
+                    Dijkstra(isDir,isChar);
                 }
                 if (button3.isMouseOver(window))
                 {
-                    A();
+                    A(isDir,isChar);
                 }
                 if (button4.isMouseOver(window))
                 {
-                    floydWarshall();
+                    floydWarshall(isDir,isChar);
                 }
                 if (button5.isMouseOver(window))
                 {
-                    bellmanFord();
+                    bellmanFord(isDir,isChar);
                 }
             default:
                 break;

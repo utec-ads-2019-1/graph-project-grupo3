@@ -11,7 +11,7 @@ int main() {
   Graph<char,int> g(false,true);
   string file;
 
-  cout<<"Ingresa nombre de file::\n";
+  std::cout <<"Ingresa nombre de file::\n";
   cin >> file;
   g.readFile(file);
   g.print();
