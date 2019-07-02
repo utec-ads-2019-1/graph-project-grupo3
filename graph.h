@@ -527,7 +527,7 @@ class Graph {
               cout<<endl;
             }
         }
-
+/*
         void aStar(){
           if(stateFloyd)
             return;
@@ -558,7 +558,7 @@ class Graph {
           for(i=0;i<size;i++)
             pthread_join(workers[i],NULL);
 
-        }
+        }*/
         GE pitagoras(node* n1,node* n2){
           return sqrt(pow(n1->getX()-n2->getX(),2)+pow(n1->getY()-n2->getY(),2));
         }
@@ -600,6 +600,22 @@ class Graph {
             }
           }
         }
+
+
+        /*   void aStar(){
+          pthread_t workers[nodes.size()];
+          indiceAStar=0;
+          int i;
+
+          for(i=0;i<nodes.size();i++)
+            pthread_create(&workers[i],NULL,jobAStar,NULL);
+          for(i=0;i<nodes.size();i++)
+            pthread_join(workers[i],NULL);
+        }
+        void jobAStar(){
+          int indcurr=indiceAStar++;
+        }
+*/
 
         void print(){
           ni=nodes.begin();
@@ -929,7 +945,7 @@ class Graph {
                                     setDst.erase(setDst.find(make_pair(dist[int(v) -96-1], v)));
                                 dist[int(v) -96- 1] = dist[int(u) - 96-1] + weight;
                                 setDst.insert(make_pair(dist[int(v) -96- 1], v));
-                                resultGraph.insertEdge(weight, char(u + 97), char(v + 97));
+                                resultGraph.insertEdge(weight, char(u), char(v));
                             }
                         }
                         else
@@ -990,8 +1006,7 @@ class Graph {
 
           int V = countV;
           int dist[V];
-
-          for(int i = 1; i <= V;i++){
+          for(int i = 0; i < V;i++){
             dist[i] = max_int;
           }
           if (isalpha(begining))

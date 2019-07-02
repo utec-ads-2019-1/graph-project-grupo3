@@ -8,15 +8,15 @@ using namespace std;
 int main() {
 
 
-  Graph<int,int> g(false,true);
+  Graph<char,int> g(false,true);
   string file;
 
-  cout<<"Ingresa nombre de file::\n";
+  std::cout <<"Ingresa nombre de file::\n";
   cin >> file;
   g.readFile(file);
   g.print();
   cout << "Prim" << endl;
-  g.prim(1);
+  g.prim('a');
 
   cout << "Kruskal" << endl;
   g.kruskal();
@@ -24,12 +24,12 @@ int main() {
   //cout<<g.bipartiteGraph()<<endl;
   //g.print();
 
-  auto dijkstra = g.dijkstra(1);
+  auto dijkstra = g.dijkstra('a');
    cout << "Dikjstra" << endl;
   dijkstra.print();
   dijkstra.writeOn("dijkstra.txt");
 
-  auto bellman =  g.BellmanFord(1);
+  auto bellman =  g.BellmanFord('a');
   bellman->print();
   bellman->writeOn("bellmanford.txt");
 
