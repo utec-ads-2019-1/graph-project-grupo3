@@ -48,7 +48,7 @@ int main() {
   //cout<<g.stronglyConnectedComponent()<<endl;
   //cout<<g.bipartiteGraph()<<endl;
   //g.print();
-  auto bellman =  g.BellmanFord(1);
+  auto bellman =  g.BellmanFord(0);
   bellman->print();
   bellman->writeOn("bellmanford.txt");
    
@@ -59,7 +59,10 @@ int main() {
   //g.prim(2);
 
 
-  cout<<"es bipartito "<<g.conexo()<<endl;
+ // cout<<"es bipartito "<<g.conexo()<<endl;
+  //cout<<"Es conexo:: "<<(g.conexo()?"Si":"No")<<endl;
+
+  //vector<vector<int>> ma=g.floydwarshall();
 
   //Read<int,int> read(file);
   //g=read.getGraph();

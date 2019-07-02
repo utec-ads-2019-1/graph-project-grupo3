@@ -30,25 +30,20 @@ class Graph {
         typedef list<edge*> EdgeSeq;
         typedef set<node*> NodeSet;
         typedef unordered_map<GV,node*> dictNode;
-        typedef map<pair<GV,GV>,edge*> dictGetEdge;
         typedef map<pair<GV,GV>,bool> dictEdges;
         typedef map<pair<GV,GV>,GE> matrixAdj;
         typedef typename NodeSeq::iterator NodeIte;
         typedef typename EdgeSeq::iterator EdgeIte;
 
-        Graph(bool dirg,bool pondg):dir(dirg),pond(pondg){size=0;}
+        Graph(bool dirg,bool pondg):dir(dirg),pond(pondg){size=0;stateFloyd=false;}
 
         ~Graph(){
-          while(edges.empty()){
-            //delete edges.back();
+          while(!edges.empty()){
+            delete edges.back();
             edges.pop_back();
           }
-          /*
-          for(int i=0;i<size;i++){
-            cout<<nodes[i]<<endl;
+          for(int i=0;i<size;i++)
             delete nodes[i];
-          }*/
-
         }
 
         bool insertNode(GV value,double x,double y){
@@ -57,6 +52,7 @@ class Graph {
             nodes.push_back(n);
             dict[value]=n;
             size++;
+            stateFloyd=false;
             return true;
           }
           return false;
@@ -71,12 +67,18 @@ class Graph {
             if((*ni)->getData()==value){
               nodes.erase(ni,ni+1);
 
-              for(auto x:nodes)
+              for(auto x:nodes){
+                if(x->getData()==value)
+                  continue;
                 removeEdge(value,x->getData());
+                if(dir)
+                  removeEdge(x->getData(),value);
+              }
 
               delete dict[value];
               dict[value]=nullptr;
               size--;
+              stateFloyd=false;
               return true;
             }
             ni++;
@@ -85,6 +87,7 @@ class Graph {
         }
 
         bool insertEdge(GV node1,GV node2){
+
           if(pond)
             throw printf("Debe ingresar un peso para la arista\n");
 
@@ -93,17 +96,18 @@ class Graph {
             edge *e=new edge(dict[node1],dict[node2]);
 
             edges.push_back(e);
-            dictE[make_pair(node1,node2)]=1;
+            dictE[make_pair(node1,node2)]=true;
 
             node* n1=dict[node1];
             node* n2=dict[node2];
             mAdj[make_pair(node1,node2)]=1;
             n1->insertNodeAdj(n2);
             if(!dir){
-              dictE[make_pair(node2,node1)]=1;
+              dictE[make_pair(node2,node1)]=true;
               mAdj[make_pair(node2,node1)]=1;
               n2->insertNodeAdj(n1);
             }
+            stateFloyd=false;
             return true;
           }
           return false;
@@ -122,24 +126,25 @@ class Graph {
              ei++;
 
             edges.insert(ei,e);
-            dictE[make_pair(node1,node2)]=1;
+            dictE[make_pair(node1,node2)]=true;
 
             mAdj[make_pair(node1,node2)]=edgeV;
             node* n1=dict[node1];
             node* n2=dict[node2];
             n1->insertNodeAdj(n2);
             if(!dir){
-              dictE[make_pair(node2,node1)]=1;
+              dictE[make_pair(node2,node1)]=true;
               n2->insertNodeAdj(n1);
               mAdj[make_pair(node2,node1)]=edgeV;
             }
+            stateFloyd=false;
             return true;
           }
           return false;
         }
         bool removeEdge(GV node1,GV node2){
           ei=edges.begin();
-          if(!dictE[make_pair(node1,node2)] || (!dir && !dictE[make_pair(node2,node1)]))
+          if(!dictE[make_pair(node1,node2)])
             throw printf("Arista no existe en el grafo\n");
 
           while(ei!=edges.end()){
@@ -157,6 +162,7 @@ class Graph {
               edges.erase(ei);
               delete edgetmp;
               dictE[make_pair(node1,node2)]=false;
+              stateFloyd=false;
               return true;
             }
             if(!dir && (*ei)->nodes[1]->getData()==node1 && (*ei)->nodes[0]->getData()==node2){
@@ -169,6 +175,7 @@ class Graph {
               delete edgetmp;
               dictE[make_pair(node1,node2)]=false;
               dictE[make_pair(node2,node1)]=false;
+              stateFloyd=false;
               return true;
             }
             ei++;
@@ -400,34 +407,105 @@ class Graph {
           return true;
         }
 
-        bool dfsUseFull2(node* v,node* dest,unordered_map<GV,bool>& visited){
-          visited[v->getData()] = true;
-          NodeSeq nodesadj=v->getNodesAdj();
-          NodeIte ni2;
-          for (ni2 = nodesadj.begin(); ni2 != nodesadj.end(); ++ni2){
-            if((*ni2)==dest)
-              return true;
-            if (!visited[(*ni2)->getData()])
-               if(dfsUseFull2(*ni2,dest,visited))
-                 return true;
-          }
-          return false;
-        }
         bool conexo(){
-          for(int i=0;i<size;i++){
-            for(int j=0;j<size;j++){
-              if(i!=j){
-                unordered_map<GV,bool> visited;
-                for(int k=0;k<size;k++)
-                  visited[nodes[k]->getData()]=0;
-                if(!dfsUseFull2(nodes[i],nodes[j],visited))
-                    return false;
+
+          if(dir)
+            throw ("Esta funcion no sirve para grafos dirigidos\n");
+
+          node* tmp;
+          queue<node*> q;
+          q.push(nodes[0]);
+          int cont=1;
+          NodeSeq nodesCurr;
+          unordered_map<node*,bool> states;
+          states[nodes[0]]=true;
+          while(!q.empty()){
+            tmp=q.front();
+            q.pop();
+            nodesCurr=tmp->getNodesAdj();
+            for(auto x:nodesCurr){
+              if(!states[x]){
+                states[x]=true;
+                q.push(x);
+                cont++;
               }
             }
           }
-          return true;
+          if(size==cont)
+            return true;
+
+          return false;
         }
 
+        //Floyd Warshall
+        vector<vector<GE>> floydwarshall(){
+
+          if(stateFloyd)
+            return matrixFloydW;
+
+          int size=nodes.size();
+          int i,j;
+
+          matrixFloydW.clear();
+
+          for(i=0;i<size;i++){
+            vector<GE> aux(size,1<<30);
+            node* tmp=nodes[i];
+            for(j=0;j<size;j++){
+              if(mAdj[{tmp->getData(),nodes[j]->getData()}])
+                aux[j]=mAdj[{tmp->getData(),nodes[j]->getData()}];
+            }
+            matrixFloydW.push_back(aux);
+          }
+
+
+          for(int k=0;k<size;k++){
+            for(i=0;i<size;i++){
+              for(j=0;j<size;j++){
+                if(matrixFloydW[i][k]==(1<<30) || matrixFloydW[k][j]==(1<<30) || i==j) continue;
+                if(matrixFloydW[i][k]+matrixFloydW[k][j] < matrixFloydW[i][j])
+                  matrixFloydW[i][j]=matrixFloydW[i][k]+matrixFloydW[k][j];
+              }
+            }
+          }
+
+          printMatrixFloydWarshall();
+
+          stateFloyd=true;
+          return matrixFloydW;
+        }
+        void printMatrixFloydWarshall(){
+          int i,j;
+          cout<<"\t";
+            for(i=0;i<size;i++)
+              cout<<nodes[i]->getData()<<"\t";
+            cout<<endl;
+            for(i=0;i<size;i++){
+              cout<<nodes[i]->getData()<<"\t";
+              for(j=0;j<size;j++){
+                if(matrixFloydW[i][j]==(1<<30))
+                  cout<<"INF\t";
+                else
+                  cout<<matrixFloydW[i][j]<<"\t";
+              }
+              cout<<endl;
+            }
+        }
+
+        /*   void aStar(){
+          pthread_t workers[nodes.size()];
+          indiceAStar=0;
+          int i;
+
+          for(i=0;i<nodes.size();i++)
+            pthread_create(&workers[i],NULL,jobAStar,NULL);
+          for(i=0;i<nodes.size();i++)
+            pthread_join(workers[i],NULL);
+        }
+        void jobAStar(){
+          int indcurr=indiceAStar++;
+        }
+*/
         void print(){
           ni=nodes.begin();
           cout <<"==========================";
@@ -743,7 +821,7 @@ class Graph {
 
           int V = countV;
           int dist[V];
-          for(int i = 1; i <= V;i++){
+          for(int i = 0; i < V;i++){
             dist[i] = max_int;
           }
 
@@ -769,7 +847,7 @@ class Graph {
               ei++;
             }
       
-
+/* 
           for (int i = 0; i <= V - 1; i++)
           {
             ei = edges.begin();
@@ -788,9 +866,9 @@ class Graph {
               }
               ei++;
             }
-          }
+          }*/
 
-          for(int i = 1; i <= V; i++)
+          for(int i = 0; i < V; i++)
           {
             cout << "From: " << begining << " go to: " << i << " with: " << dist[i] << endl;
           }
@@ -804,13 +882,15 @@ private : NodeSeq nodes;
         EdgeSeq edges;
         dictNode dict;
         dictEdges dictE;
-        dictGetEdge dictGetE;
         matrixAdj mAdj;
         int size;
         NodeIte ni;
         EdgeIte ei;
         bool dir;
         bool pond;
+        vector<vector<GE>> matrixFloydW;
+        bool stateFloyd;
+        int indiceAStar;
 };
 
 template <typename GV,typename GE>
