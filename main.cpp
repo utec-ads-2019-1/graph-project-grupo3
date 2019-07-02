@@ -57,6 +57,7 @@ int main() {
   cout<<"Es conexo:: "<<(g.conexo()?"Si":"No")<<endl;
 
   //vector<vector<int>> ma=g.floydwarshall();
+  //g.aStar();
 
   //Read<int,int> read(file);
   //g=read.getGraph();
