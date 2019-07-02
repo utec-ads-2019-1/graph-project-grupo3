@@ -17,6 +17,7 @@ class Node {
         typedef typename NodeSeq::iterator NodeIte;
 
         //EdgeSeq edges;
+        Node(){};
         Node(V data,double x,double y){
           this->data=data;
           this->x=x;
@@ -26,7 +27,9 @@ class Node {
           parent = this;
           countNodeAdj=0;
         }
-        ~Node(){}
+        ~Node(){
+
+        }
 
         NodeSeq getNodesAdj(){
           return nodesAdj;

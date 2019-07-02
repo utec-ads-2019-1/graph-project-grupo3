@@ -34,7 +34,7 @@ void Textos(std::string texto, sf::Font &font, sf::RenderWindow &window, int pos
 {
     sf::Text textTo;
     textTo.setString(texto);
-    textTo.setCharacterSize(30);
+    textTo.setCharacterSize(15);
     textTo.setFillColor(sf::Color::Black);
     textTo.setFont(font);
     textTo.setPosition(posX, posY);
@@ -109,7 +109,7 @@ void setCircle(float x, float y, sf::RenderWindow &window, char i)
 
 void GraphState()
 {
-    sf::RenderWindow window(sf::VideoMode(1200, 1200), ("Graph"));
+    sf::RenderWindow window(sf::VideoMode(1280, 720), ("Graph"));
     sf::Font font;
     font.loadFromFile("Quicksand-Bold.ttf");
     std::vector<node> nodes;
@@ -191,7 +191,7 @@ void Dijkstra()
 {
     sf::Font font;
     font.loadFromFile("Quicksand-Bold.ttf");
-    sf::RenderWindow window(sf::VideoMode(1200, 1200), ("Dijkstra"));
+    sf::RenderWindow window(sf::VideoMode(1280, 720), ("Dijkstra"));
     std::vector<node> nodes;
     std::vector<edge> edges;
     std::vector<float> posx, posy,pesos,conexion1,conexion2;
@@ -277,7 +277,7 @@ void A()
 {
     sf::Font font;
     font.loadFromFile("Quicksand-Bold.ttf");
-    sf::RenderWindow window(sf::VideoMode(1200, 1200), ("A*"));
+    sf::RenderWindow window(sf::VideoMode(1280, 720), ("A*"));
     std::vector<node> nodes;
     std::vector<edge> edges;
     std::vector<float> posx, posy,pesos,conexion1,conexion2;
@@ -364,7 +364,7 @@ void floydWarshall()
 {
     sf::Font font;
     font.loadFromFile("Quicksand-Bold.ttf");
-    sf::RenderWindow window(sf::VideoMode(1200, 1200), ("Floyd Warshall"));
+    sf::RenderWindow window(sf::VideoMode(1280, 720), ("Floyd Warshall"));
     std::vector<node> nodes;
     std::vector<edge> edges;
     std::vector<float> posx, posy,pesos,conexion1,conexion2;
@@ -453,7 +453,7 @@ void bellmanFord()
 {
     sf::Font font;
     font.loadFromFile("Quicksand-Bold.ttf");
-    sf::RenderWindow window(sf::VideoMode(1200, 1200), ("Bellman Ford"));
+    sf::RenderWindow window(sf::VideoMode(1280, 720), ("Bellman Ford"));
     std::vector<node> nodes;
     std::vector<edge> edges;
     std::vector<float> posx, posy,pesos,conexion1,conexion2;
@@ -535,27 +535,27 @@ void bellmanFord()
 }
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(1200, 1200), ("Graph"));
+    sf::RenderWindow window(sf::VideoMode(1280, 720), ("Graph"));
     sf::Font font;
     font.loadFromFile("Quicksand-Bold.ttf");
     Button button1("Graph", {200, 50}, 20, sf::Color(157, 227, 158), sf::Color::Black);
-    button1.setPosition({500, 300});
+    button1.setPosition({500, 170});
     button1.setFont(font);
 
     Button button2("Dijkstra", {200, 50}, 20, sf::Color(157, 227, 158), sf::Color::Black);
-    button2.setPosition({500, 400});
+    button2.setPosition({500, 270});
     button2.setFont(font);
 
     Button button3("    A*", {200, 50}, 20, sf::Color(157, 227, 158), sf::Color::Black);
-    button3.setPosition({500, 500});
+    button3.setPosition({500, 370});
     button3.setFont(font);
 
     Button button4("Floyd-Warshall", {200, 50}, 13, sf::Color(157, 227, 158), sf::Color::Black);
-    button4.setPosition({500, 600});
+    button4.setPosition({500, 470});
     button4.setFont(font);
 
     Button button5("Bellman-Ford", {200, 50}, 15, sf::Color(157, 227, 158), sf::Color::Black);
-    button5.setPosition({500, 700});
+    button5.setPosition({500, 570});
     button5.setFont(font);
     while (window.isOpen())
     {
@@ -634,14 +634,14 @@ int main()
             }
         }
         window.clear(sf::Color(0, 202, 165));
-        Textos("Grafos Grupo 3", font, window, 500, 50);
-        Textos("Autores: ", font, window, 300, 100);
-        Textos("*", font, window, 300, 150);
-        Textos("Jhans Ubaldo", font, window, 340, 140);
-        Textos("*", font, window, 300, 190);
-        Textos("Giordano Alvitez", font, window, 340, 180);
-        Textos("*", font, window, 300, 230);
-        Textos("Antonio Toche", font, window, 340, 220);
+        Textos("Grafos Grupo 3", font, window, 640, 20);
+        Textos("Autores: ", font, window, 500, 40);
+        Textos("*", font, window, 500, 70);
+        Textos("Jhans Ubaldo", font, window, 540, 70);
+        Textos("*", font, window, 500, 90);
+        Textos("Giordano Alvitez", font, window, 540, 90);
+        Textos("*", font, window, 500, 110);
+        Textos("Antonio Toche", font, window, 540, 110);
         button1.drawTo(window);
         button2.drawTo(window);
         button3.drawTo(window);

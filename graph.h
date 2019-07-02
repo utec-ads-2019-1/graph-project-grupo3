@@ -38,12 +38,14 @@ class Graph {
         Graph(bool dirg,bool pondg):dir(dirg),pond(pondg){size=0;}
 
         ~Graph(){
+            /*
           while(!edges.empty()){
             delete edges.back();
             edges.pop_back();
           }
           for(int i=0;i<size;i++)
             delete nodes[i];
+             */
         }
 
         bool insertNode(GV value,double x,double y){
@@ -524,13 +526,13 @@ class Graph {
             return nodo->getCountNodesAdj();
         }
 
-    Graph<GV,GV> kruskal() { //Pasar como grafo
+    Graph kruskal() { //Pasar como grafo
       cout<<"Encontro a kruskal\n";
             if(!dir && conexo()) {
                 Graph krusky(false, true);
                 EdgeSeq krusk;
                 NodeSet visitedNode;
-                auto mySet = new DsjSet<GE>;
+                auto mySet = new DsjSet<GV>;
                 int totalWeight = 0;
 
                 for (ni = nodes.begin(); ni != nodes.end(); ni++)
@@ -588,15 +590,18 @@ class Graph {
             return result;
         }
 
-        Graph<GV,GV> prim(GV etiqueta){
+        Graph prim(GV etiqueta){
 
             if(!dir && conexo()) { //Si no es dirigido y es conexo
-                auto start = dict[etiqueta];
+
+                node* start = dict[etiqueta];
                 int weight=0;
+
                 if (start) {
                     Graph result(false, true);
                     NodeSet visited, visitedResult, totalNodes, remainded;
                     visited.insert(start);
+
                     //Llenar el set de nodos
                     for (ni = nodes.begin(); ni != nodes.end(); ni++) //llenar los nodes
                         totalNodes.insert(*ni);
@@ -609,9 +614,9 @@ class Graph {
 
                     while (visited != totalNodes) {
                         remainded = difference(totalNodes, visited);
-                        int currentMin = 99999;
-                        int currentMin2 = 99999;
-                        auto node1 = new node;
+                        int currentMin = max_int;
+                        int currentMin2 = max_int;
+                        auto node1 = new  node;
                         auto node2 = new node;
                         auto node11 = new node;
                         auto node22 = new node;
@@ -681,7 +686,7 @@ class Graph {
 
                             visited.insert(node2);
                         } else {
-                            if (currentMin != 99999 && currentMin2 != 99999) {
+                            if (currentMin != max_int && currentMin2 != max_int) {
                                 auto v = visitedResult.find(node1); //Cnntrolar no volver a insertar el mismo nodo
                                 auto v2 = visitedResult.find(node2);
                                 if (v2 == visitedResult.end()) {
@@ -712,6 +717,68 @@ class Graph {
                 }
             }else
                 throw out_of_range("El algoritmo de Prim no funciona para grafos dirigidos");
+        }
+
+         void dijkstra(GV etiqueta){
+            if (dict[etiqueta]) {
+                Graph resultGraph(false, true);
+                set <pair<int, GV>> setDst;
+                vector<int> dist(size, max_int);
+                setDst.insert(make_pair(0, etiqueta));
+                if (isalpha(etiqueta))
+                    dist [int(etiqueta)-96-1] = 0;
+                else
+                    dist [etiqueta-1] = 0;
+
+                while(!setDst.empty()){
+                    pair <int, GV> temp = *(setDst.begin());
+                    setDst.erase(setDst.begin());
+                    GV u = temp.second;
+
+                    NodeSeq nodestmp = dict[u]->getNodesAdj();
+                    NodeIte ni2=nodestmp.begin();
+                    for(;ni2!=nodestmp.end();ni2++){
+                        GV v = (*ni2)->getData();
+                        int weight = 0;
+                        ei = edges.begin();
+                        while (ei != edges.end()) {
+                            if(((*ei)->nodes[0]->getData() == u && (*ei)->nodes[1]->getData()==v) || ((*ei)->nodes[1]->getData() == u && (*ei)->nodes[0]->getData()==v)) {
+                                weight = (*ei)->getData();
+                                break;
+                            }
+                            ei++;
+                        }
+                        if(isalpha(etiqueta))
+                        {
+                            if (dist[int(v) - 96-1] > dist[int(u) - 96- 1] + weight) {
+                                if (dist[int(v)- 96 - 1] != max_int)
+                                    setDst.erase(setDst.find(make_pair(dist[int(v) -96-1], v)));
+                                dist[int(v) -96- 1] = dist[int(u) - 96-1] + weight;
+                                setDst.insert(make_pair(dist[int(v) -96- 1], v));
+                            }
+                        }
+                        else
+                        {
+                            if (dist[v - 1] > dist[u - 1] + weight) {
+                                if (dist[v - 1] != max_int)
+                                    setDst.erase(setDst.find(make_pair(dist[v - 1], v)));
+                                dist[v - 1] = dist[u - 1] + weight;
+                                setDst.insert(make_pair(dist[v - 1], v));
+                            }
+                        }
+                    }
+                }
+                cout << "¡Dikjstra!" <<endl;
+                for(int i = 0; i < size; i++){
+                    if(isalpha(etiqueta))
+                        cout <<"From: "<< etiqueta << " to: " << char(i+1+96) << " Peso: " << dist[i] << endl;
+                    else
+                        cout <<"From: "<< etiqueta << " to: " << i+1 << " Peso: " << dist[i] << endl;
+                }
+
+
+            }else
+                throw out_of_range("El nodo no está en el grafo");
         }
 
 
