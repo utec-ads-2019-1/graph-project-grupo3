@@ -11,13 +11,16 @@
 #include<map>
 #include <set>
 #include<queue>
+#include <stdexcept>
 #include<stack>
 #include<ctime>
 #include<cmath>
-
+#include <limits>
 #include "node.h"
 #include "edge.h"
 #include "dsjset.h"
+#define max_int 214748364
+
 
 struct pairAStar{
     int indice;
@@ -27,7 +30,6 @@ struct pairAStar{
        return value<other.value;
     }
 };
-
 
 using namespace std;
 template <typename GV,typename GE>
@@ -50,12 +52,14 @@ class Graph {
         Graph(bool dirg,bool pondg):dir(dirg),pond(pondg){size=0;stateFloyd=false;}
 
         ~Graph(){
+            /*
           while(!edges.empty()){
             delete edges.back();
             edges.pop_back();
           }
           for(int i=0;i<size;i++)
             delete nodes[i];
+             */
         }
 
         bool insertNode(GV value,double x,double y){
@@ -229,11 +233,12 @@ class Graph {
                 ei = edges.begin();
                 for (auto i = listAdjs.begin(); i != listAdjs.end() && ei != edges.end(); ++i, ++ei)
                 {
-
-                    if (!frequented[(*i)->getData() - 1]){
-                        bfsGraph->insertEdge((*ei)->getData(), currNode->getData(), (*i)->getData());
-                        container.push(*i);
-                        frequented[(*i)->getData() - 1] = true;
+                  node **arr = (*ei)->getNodes();
+                  if (!frequented[(*i)->getData() - 1])
+                  {
+                    bfsGraph->insertEdge((*ei)->getData(), currNode->getData(), (*i)->getData());
+                    container.push(*i);
+                    frequented[(*i)->getData() - 1] = true;
                     }
                 }
                 frequented[currNode->getData() - 1] = true;
@@ -594,7 +599,6 @@ class Graph {
               }
             }
           }
-
         }
 
         void print(){
@@ -690,13 +694,13 @@ class Graph {
             return nodo->getCountNodesAdj();
         }
 
-    Graph<GV,GV> kruskal() { //Pasar como grafo
+    Graph kruskal() { //Pasar como grafo
       cout<<"Encontro a kruskal\n";
             if(!dir && conexo()) {
                 Graph krusky(false, true);
                 EdgeSeq krusk;
                 NodeSet visitedNode;
-                auto mySet = new DsjSet<GE>;
+                auto mySet = new DsjSet<GV>;
                 int totalWeight = 0;
 
                 for (ni = nodes.begin(); ni != nodes.end(); ni++)
@@ -721,11 +725,11 @@ class Graph {
                         auto v = visitedNode.find((*ei)->nodes[0]); //Conntrolar no volver a insertar el mismo nodo
                         auto v2 = visitedNode.find((*ei)->nodes[1]);
                         if (v == visitedNode.end()) {
-                            krusky.insertNode((*ei)->nodes[0]->getData(), 0, 0);
+                            krusky.insertNode((*ei)->nodes[0]->getData(),(*ei)->nodes[0]->getX() , (*ei)->nodes[0]->getY());
                             visitedNode.insert((*ei)->nodes[0]);
                         }
                         if (v2 == visitedNode.end()) {
-                            krusky.insertNode((*ei)->nodes[1]->getData(), 0, 0);
+                            krusky.insertNode((*ei)->nodes[1]->getData(), (*ei)->nodes[1]->getX(), (*ei)->nodes[1]->getY());
                             visitedNode.insert((*ei)->nodes[1]);
                         }
 
@@ -754,15 +758,18 @@ class Graph {
             return result;
         }
 
-        Graph<GV,GV> prim(GV etiqueta){
+        Graph prim(GV etiqueta){
 
             if(!dir && conexo()) { //Si no es dirigido y es conexo
-                auto start = dict[etiqueta];
+
+                node* start = dict[etiqueta];
                 int weight=0;
+
                 if (start) {
                     Graph result(false, true);
                     NodeSet visited, visitedResult, totalNodes, remainded;
                     visited.insert(start);
+
                     //Llenar el set de nodos
                     for (ni = nodes.begin(); ni != nodes.end(); ni++) //llenar los nodes
                         totalNodes.insert(*ni);
@@ -775,9 +782,9 @@ class Graph {
 
                     while (visited != totalNodes) {
                         remainded = difference(totalNodes, visited);
-                        int currentMin = 99999;
-                        int currentMin2 = 99999;
-                        auto node1 = new node;
+                        int currentMin = max_int;
+                        int currentMin2 = max_int;
+                        auto node1 = new  node;
                         auto node2 = new node;
                         auto node11 = new node;
                         auto node22 = new node;
@@ -816,11 +823,11 @@ class Graph {
                             auto v = visitedResult.find(node11); //Conntrolar no volver a insertar el mismo nodo
                             auto v2 = visitedResult.find(node22);
                             if (v2 == visitedResult.end()) {
-                                result.insertNode(node22->getData(), 0, 0);
+                                result.insertNode(node22->getData(), node22->getX(), node22->getY());
                                 visitedResult.insert(node22);
                             }
                             if (v == visitedResult.end()) {
-                                result.insertNode(node11->getData(), 0, 0);
+                                result.insertNode(node11->getData(), node11->getX(), node11->getY());
                                 visitedResult.insert(node11);
                             }
                             weight+=currentMin2;
@@ -833,11 +840,11 @@ class Graph {
                             auto v2 = visitedResult.find(node1); //Conntrolar no volver a insertar el mismo nodo
                             auto v = visitedResult.find(node2);
                             if (v == visitedResult.end()) {
-                                result.insertNode(node2->getData(), 0, 0);
+                                result.insertNode(node2->getData(), node2->getX(), node2->getY());
                                 visitedResult.insert(node2);
                             }
                             if (v2 == visitedResult.end()) {
-                                result.insertNode(node1->getData(), 0, 0);
+                                result.insertNode(node1->getData(), node1->getX(), node1->getY());
                                 visitedResult.insert(node1);
                             }
                             weight+=currentMin;
@@ -847,15 +854,15 @@ class Graph {
 
                             visited.insert(node2);
                         } else {
-                            if (currentMin != 99999 && currentMin2 != 99999) {
+                            if (currentMin != max_int && currentMin2 != max_int) {
                                 auto v = visitedResult.find(node1); //Cnntrolar no volver a insertar el mismo nodo
                                 auto v2 = visitedResult.find(node2);
                                 if (v2 == visitedResult.end()) {
-                                    result.insertNode(node2->getData(), 0, 0);
+                                    result.insertNode(node2->getData(), node2->getX(), node2->getY());
                                     visitedResult.insert(node2);
                                 }
                                 if (v == visitedResult.end()) {
-                                    result.insertNode(node1->getData(), 0, 0);
+                                    result.insertNode(node1->getData(), node1->getX(), node1->getY());
                                     visitedResult.insert(node1);
                                 }
 
@@ -880,6 +887,77 @@ class Graph {
                 throw out_of_range("El algoritmo de Prim no funciona para grafos dirigidos");
         }
 
+         Graph dijkstra(GV etiqueta){
+            if (dict[etiqueta]) {
+                Graph resultGraph(false, true);
+                set <pair<int, GV>> setDst;
+                vector<int> dist(size, max_int);
+                setDst.insert(make_pair(0, etiqueta));
+
+                for (ni = nodes.begin(); ni != nodes.end(); ni++)
+                    resultGraph.insertNode((*ni)->getData(), (*ni)->getX(), (*ni)->getY());
+
+
+                if (isalpha(etiqueta))
+                    dist [int(etiqueta)-96-1] = 0;
+                else
+                    dist [etiqueta-1] = 0;
+
+                while(!setDst.empty()){
+                    pair <int, GV> temp = *(setDst.begin());
+                    setDst.erase(setDst.begin());
+                    GV u = temp.second;
+                    NodeSeq nodestmp = dict[u]->getNodesAdj();
+                    NodeIte ni2=nodestmp.begin();
+                    for(;ni2!=nodestmp.end();ni2++){
+                        GV v = (*ni2)->getData();
+                        int weight = 0;
+
+                        ei = edges.begin();
+                        while (ei != edges.end()) {
+                            if(((*ei)->nodes[0]->getData() == u && (*ei)->nodes[1]->getData()==v) || ((*ei)->nodes[1]->getData() == u && (*ei)->nodes[0]->getData()==v)) {
+                                weight = (*ei)->getData();
+                                break;
+                            }
+                            ei++;
+                        }
+
+                        if(isalpha(etiqueta))
+                        {
+                            if (dist[int(v) - 96-1] > dist[int(u) - 96- 1] + weight) {
+                                if (dist[int(v)- 96 - 1] != max_int)
+                                    setDst.erase(setDst.find(make_pair(dist[int(v) -96-1], v)));
+                                dist[int(v) -96- 1] = dist[int(u) - 96-1] + weight;
+                                setDst.insert(make_pair(dist[int(v) -96- 1], v));
+                                resultGraph.insertEdge(weight, char(u + 97), char(v + 97));
+                            }
+                        }
+                        else
+                        {
+                            if (dist[v - 1] > dist[u - 1] + weight) {
+                                if (dist[v - 1] != max_int)
+                                    setDst.erase(setDst.find(make_pair(dist[v - 1], v)));
+                                dist[v - 1] = dist[u - 1] + weight;
+                                setDst.insert(make_pair(dist[v - 1], v));
+                                resultGraph.insertEdge(weight, u, v);
+                            }
+                        }
+                    }
+                }
+                cout << "¡Dikjstra!" <<endl;
+                for(int i = 0; i < size; i++){
+                    if(isalpha(etiqueta))
+                        cout <<"From: "<< etiqueta << " to: " << char(i+1+96) << " Peso: " << dist[i] << endl;
+                    else
+                        cout <<"From: "<< etiqueta << " to: " << i+1 << " Peso: " << dist[i] << endl;
+                }
+
+                return resultGraph;
+            }else
+                throw out_of_range("El nodo no está en el grafo");
+
+        }
+
 
         node* getNode(GV value){
           if(dict[value])
@@ -887,8 +965,91 @@ class Graph {
           return nullptr;
         }
 
-    private:
-        NodeSeq nodes;
+        void writeOn(string nameOf)
+        {
+          ofstream File;
+          File.open(nameOf);
+          ei = edges.begin();
+          while (ei != edges.end())
+          {
+            node **arr = (*ei)->getNodes();
+            File << arr[0]->getData() << " " << arr[1]->getData() << " " << (*ei)->getData() << "\n";
+            ei++;
+          }
+        }
+
+        Graph *BellmanFord(int begining)
+        {
+          int countV = 0;
+          auto BellmanFordGraph = new Graph(dir, pond);
+          for (ni = nodes.begin(); ni != nodes.end(); ni++)
+          {
+            BellmanFordGraph->insertNode((*ni)->getData(), (*ni)->getX(), (*ni)->getY());
+            countV++;
+          }
+
+          int V = countV;
+          int dist[V];
+
+          for(int i = 1; i <= V;i++){
+            dist[i] = max_int;
+          }
+          if (isalpha(begining))
+              dist[begining-96] = 0;
+          else
+              dist[begining] = 0;
+
+          vector<node *> hasEdge;
+          for (int i = 0; i <= V - 1; i++)
+          {
+            ei = edges.begin();
+            while (ei != edges.end())
+            {
+              node **arr = (*ei)->getNodes();
+              int u = arr[0]->getData();
+              int v = arr[1]->getData();
+              int weight = (*ei)->getData();
+              if(isalpha(begining)) {
+                  if (dist[u-96] != max_int) {
+                      if ((dist[u-96] + weight) < dist[v-96]) {
+                          dist[v-96] = dist[u-96] + weight;
+                          // if(find(hasEdge.begin(),hasEdge.end(),arr[1])==hasEdge.end()){
+                          // hasEdge.push_back(arr[1]);
+                          BellmanFordGraph->insertEdge((*ei)->getData(), arr[0]->getData(), arr[1]->getData());
+                          //}
+                      }
+                  }
+              }
+              else{
+                  if (dist[u] != max_int) {
+                      if ((dist[u] + weight) < dist[v]) {
+                          dist[v] = dist[u] + weight;
+                          // if(find(hasEdge.begin(),hasEdge.end(),arr[1])==hasEdge.end()){
+                          // hasEdge.push_back(arr[1]);
+                          BellmanFordGraph->insertEdge((*ei)->getData(), arr[0]->getData(), arr[1]->getData());
+                          //}
+                      }
+                  }
+              }
+              ei++;
+            }
+
+          }
+          cout << "Bellman Ford\n";
+
+          for(int i = 1; i <= V; i++){
+              if(isalpha(begining))
+                  cout << "From: " << char(begining) << " go to: " << char(i + 96) << " with: " << dist[i] << endl;
+              else
+                  cout << "From: " << begining << " go to: " << i << " with: " << dist[i] << endl;
+          }
+
+          return BellmanFordGraph;
+        }
+
+      
+
+private : NodeSeq nodes;
         EdgeSeq edges;
         dictNode dict;
         dictEdges dictE;
