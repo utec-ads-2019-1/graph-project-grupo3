@@ -56,6 +56,8 @@ int main() {
   cout<<"es bipartito "<<g.conexo()<<endl;
   cout<<"Es conexo:: "<<(g.conexo()?"Si":"No")<<endl;
 
+  //vector<vector<int>> ma=g.floydwarshall();
+
   //Read<int,int> read(file);
   //g=read.getGraph();
 

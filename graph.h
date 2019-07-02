@@ -34,7 +34,7 @@ class Graph {
         typedef typename NodeSeq::iterator NodeIte;
         typedef typename EdgeSeq::iterator EdgeIte;
 
-        Graph(bool dirg,bool pondg):dir(dirg),pond(pondg){size=0;}
+        Graph(bool dirg,bool pondg):dir(dirg),pond(pondg){size=0;stateFloyd=false;}
 
         ~Graph(){
           while(!edges.empty()){
@@ -51,6 +51,7 @@ class Graph {
             nodes.push_back(n);
             dict[value]=n;
             size++;
+            stateFloyd=false;
             return true;
           }
           return false;
@@ -76,6 +77,7 @@ class Graph {
               delete dict[value];
               dict[value]=nullptr;
               size--;
+              stateFloyd=false;
               return true;
             }
             ni++;
@@ -104,6 +106,7 @@ class Graph {
               mAdj[make_pair(node2,node1)]=1;
               n2->insertNodeAdj(n1);
             }
+            stateFloyd=false;
             return true;
           }
           return false;
@@ -133,6 +136,7 @@ class Graph {
               n2->insertNodeAdj(n1);
               mAdj[make_pair(node2,node1)]=edgeV;
             }
+            stateFloyd=false;
             return true;
           }
           return false;
@@ -157,6 +161,7 @@ class Graph {
               edges.erase(ei);
               delete edgetmp;
               dictE[make_pair(node1,node2)]=false;
+              stateFloyd=false;
               return true;
             }
             if(!dir && (*ei)->nodes[1]->getData()==node1 && (*ei)->nodes[0]->getData()==node2){
@@ -169,6 +174,7 @@ class Graph {
               delete edgetmp;
               dictE[make_pair(node1,node2)]=false;
               dictE[make_pair(node2,node1)]=false;
+              stateFloyd=false;
               return true;
             }
             ei++;
@@ -427,6 +433,75 @@ class Graph {
             return true;
 
           return false;
+        }
+
+        //Floyd Warshall
+        vector<vector<GE>> floydwarshall(){
+
+          if(stateFloyd)
+            return matrixFloydW;
+
+          int size=nodes.size();
+          int i,j;
+
+          matrixFloydW.clear();
+
+          for(i=0;i<size;i++){
+            vector<GE> aux(size,1<<30);
+            node* tmp=nodes[i];
+            for(j=0;j<size;j++){
+              if(mAdj[{tmp->getData(),nodes[j]->getData()}])
+                aux[j]=mAdj[{tmp->getData(),nodes[j]->getData()}];
+            }
+            matrixFloydW.push_back(aux);
+          }
+
+
+          for(int k=0;k<size;k++){
+            for(i=0;i<size;i++){
+              for(j=0;j<size;j++){
+                if(matrixFloydW[i][k]==(1<<30) || matrixFloydW[k][j]==(1<<30) || i==j) continue;
+                if(matrixFloydW[i][k]+matrixFloydW[k][j] < matrixFloydW[i][j])
+                  matrixFloydW[i][j]=matrixFloydW[i][k]+matrixFloydW[k][j];
+              }
+            }
+          }
+
+          printMatrixFloydWarshall();
+
+          stateFloyd=true;
+          return matrixFloydW;
+        }
+        void printMatrixFloydWarshall(){
+          int i,j;
+          cout<<"\t";
+            for(i=0;i<size;i++)
+              cout<<nodes[i]->getData()<<"\t";
+            cout<<endl;
+            for(i=0;i<size;i++){
+              cout<<nodes[i]->getData()<<"\t";
+              for(j=0;j<size;j++){
+                if(matrixFloydW[i][j]==(1<<30))
+                  cout<<"INF\t";
+                else
+                  cout<<matrixFloydW[i][j]<<"\t";
+              }
+              cout<<endl;
+            }
+        }
+
+        void aStar(){
+          pthread_t workers[nodes.size()];
+          indiceAStar=0;
+          int i;
+
+          for(i=0;i<nodes.size();i++)
+            pthread_create(&workers[i],NULL,jobAStar,NULL);
+          for(i=0;i<nodes.size();i++)
+            pthread_join(workers[i],NULL);
+        }
+        void jobAStar(){
+          int indcurr=indiceAStar++;
         }
 
         void print(){
@@ -730,6 +805,9 @@ class Graph {
         EdgeIte ei;
         bool dir;
         bool pond;
+        vector<vector<GE>> matrixFloydW;
+        bool stateFloyd;
+        int indiceAStar;
 };
 
 template <typename GV,typename GE>
