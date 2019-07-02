@@ -32,7 +32,9 @@ int main() {
   auto bellman =  g.BellmanFord(1);
   bellman->print();
   bellman->writeOn("bellmanford.txt");
-   
+
+
+
   //auto resultado = g.DFS(2);
   //resultado->print();
   //resultado->writeOn("Bfs.txt");
