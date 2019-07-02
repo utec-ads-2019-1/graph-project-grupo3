@@ -13,11 +13,24 @@
 #include<queue>
 #include <stdexcept>
 #include<stack>
+#include<ctime>
+#include<cmath>
 #include <limits>
 #include "node.h"
 #include "edge.h"
 #include "dsjset.h"
 #define max_int 214748364
+
+
+struct pairAStar{
+    int indice;
+    int value;
+
+    bool operator<(const pairAStar &other){
+       return value<other.value;
+    }
+};
+
 using namespace std;
 template <typename GV,typename GE>
 class Graph {
@@ -34,8 +47,9 @@ class Graph {
         typedef map<pair<GV,GV>,GE> matrixAdj;
         typedef typename NodeSeq::iterator NodeIte;
         typedef typename EdgeSeq::iterator EdgeIte;
+        typedef void * (*THREADFUNCPTR)(void *);
 
-        Graph(bool dirg,bool pondg):dir(dirg),pond(pondg){size=0;}
+        Graph(bool dirg,bool pondg):dir(dirg),pond(pondg){size=0;stateFloyd=false;}
 
         ~Graph(){
             /*
@@ -54,6 +68,7 @@ class Graph {
             nodes.push_back(n);
             dict[value]=n;
             size++;
+            stateFloyd=false;
             return true;
           }
           return false;
@@ -79,6 +94,7 @@ class Graph {
               delete dict[value];
               dict[value]=nullptr;
               size--;
+              stateFloyd=false;
               return true;
             }
             ni++;
@@ -107,6 +123,7 @@ class Graph {
               mAdj[make_pair(node2,node1)]=1;
               n2->insertNodeAdj(n1);
             }
+            stateFloyd=false;
             return true;
           }
           return false;
@@ -136,6 +153,7 @@ class Graph {
               n2->insertNodeAdj(n1);
               mAdj[make_pair(node2,node1)]=edgeV;
             }
+            stateFloyd=false;
             return true;
           }
           return false;
@@ -160,6 +178,7 @@ class Graph {
               edges.erase(ei);
               delete edgetmp;
               dictE[make_pair(node1,node2)]=false;
+              stateFloyd=false;
               return true;
             }
             if(!dir && (*ei)->nodes[1]->getData()==node1 && (*ei)->nodes[0]->getData()==node2){
@@ -172,6 +191,7 @@ class Graph {
               delete edgetmp;
               dictE[make_pair(node1,node2)]=false;
               dictE[make_pair(node2,node1)]=false;
+              stateFloyd=false;
               return true;
             }
             ei++;
@@ -431,6 +451,154 @@ class Graph {
             return true;
 
           return false;
+        }
+
+        //Floyd Warshall
+        vector<vector<GE>> floydwarshall(){
+
+          if(stateFloyd)
+            return matrixFloydW;
+
+          int i,j;
+
+          matrixFloydW.clear();
+          matrixFloydPath.clear();
+
+          for(i=0;i<size;i++){
+            vector<GE> aux(size,1<<30);
+            vector<GV> aux2(size,nodes[i]->getData());
+            node* tmp=nodes[i];
+            for(j=0;j<size;j++){
+              if(mAdj[{tmp->getData(),nodes[j]->getData()}]){
+                aux[j]=mAdj[{tmp->getData(),nodes[j]->getData()}];
+              }
+            }
+            matrixFloydW.push_back(aux);
+            matrixFloydPath.push_back(aux2);
+          }
+
+
+          for(int k=0;k<size;k++){
+            for(i=0;i<size;i++){
+              for(j=0;j<size;j++){
+                if(matrixFloydW[i][k]==(1<<30) || matrixFloydW[k][j]==(1<<30) || i==j) continue;
+                if(matrixFloydW[i][k]+matrixFloydW[k][j] < matrixFloydW[i][j]){
+                  matrixFloydW[i][j]=matrixFloydW[i][k]+matrixFloydW[k][j];
+                  matrixFloydPath[i][j]=nodes[k]->getData();
+                }
+              }
+            }
+          }
+
+          printMatrixFloydWarshall();
+          printMatrixFloydWarshallPath();
+
+          stateFloyd=true;
+          return matrixFloydW;
+        }
+        void printMatrixFloydWarshallPath(){
+          int i,j;
+          cout<<"\t";
+            for(i=0;i<size;i++)
+              cout<<nodes[i]->getData()<<"\t";
+            cout<<endl;
+            for(i=0;i<size;i++){
+              cout<<nodes[i]->getData()<<"\t";
+              for(j=0;j<size;j++){
+                  cout<<matrixFloydPath[i][j]<<"\t";
+              }
+              cout<<endl;
+            }
+        }
+        void printMatrixFloydWarshall(){
+          int i,j;
+          cout<<"\t";
+            for(i=0;i<size;i++)
+              cout<<nodes[i]->getData()<<"\t";
+            cout<<endl;
+            for(i=0;i<size;i++){
+              cout<<nodes[i]->getData()<<"\t";
+              for(j=0;j<size;j++){
+                if(matrixFloydW[i][j]==(1<<30))
+                  cout<<"INF\t";
+                else
+                  cout<<matrixFloydW[i][j]<<"\t";
+              }
+              cout<<endl;
+            }
+        }
+
+        void aStar(){
+          if(stateFloyd)
+            return;
+
+          pthread_t workers[size];
+          indiceAStar=0;
+          int i;
+          vector<pair<int,int>*> pairN;
+          srand(time(NULL));
+          int x=-1,y=-1;
+          for(i=0;i<5;i++){
+            while(x==y){
+              x=rand()%size;
+              y=rand()%size;
+            }
+            pair<int,int>*paux;
+            paux->first=x;
+            paux->second=y;
+            pairN.push_back(paux);
+          }
+          stateFloyd=true;
+
+          for(i=0;i<size;i++)
+            dictAStar[nodes[i]->getData()]=i;
+
+          for(i=0;i<size;i++)
+            pthread_create(&workers[i],NULL,jobAStar,pairN[i]);
+          for(i=0;i<size;i++)
+            pthread_join(workers[i],NULL);
+
+        }
+        GE pitagoras(node* n1,node* n2){
+          return sqrt(pow(n1->getX()-n2->getX(),2)+pow(n1->getY()-n2->getY(),2));
+        }
+        void *jobAStar(void* p){
+
+          pair<int,int>*varp=(pair<int,int>*)p;
+          node* f=nodes[varp->first];
+          node* d=nodes[varp->second];
+
+          vector<GE> distances(size,1<<30);
+          vector<GV> path(size,f->getData());
+          bool states[size]={false};
+
+          distances[dictAStar[f->getData()]]=0;
+          priority_queue<pairAStar> pq;
+          pq.push(pairAStar(dictAStar[f->getData()],0));
+
+          while(!pq.empty()){
+            pairAStar tmpPair=pq.top();
+            pq.pop();
+            states[tmpPair.indice]=true;
+            node* tmpnode=nodes[tmpPair.indice];
+            vector<node*> tmpnodesAdj=tmpnode->getNodesAdj();
+            for(node* x:tmpnodesAdj){
+              if(!states[dictAStar[x->getData()]]){
+                if(distances[dictAStar[x->getData()]]>mAdj[{tmpnode->getData(),x->getData()}]+pitagoras(tmpnode,x)){
+                  distances[dictAStar[x->getData()]]=mAdj[{tmpnode->getData(),x->getData()}]+pitagoras(tmpnode,x);
+                  path[dictAStar[x->getData()]]=tmpnode->getData();
+                }
+                pq.push(pairAStar(dictAStar[x->getData()],0));
+              }
+              if(x->getData()==d->getData()){
+                GV tmpPath=x->getData();
+                while(tmpPath!=f->getData()){
+                  cout<<tmpPath<<" ";
+                }
+                cout<<tmpPath<<endl;
+              }
+            }
+          }
         }
 
         void print(){
@@ -891,6 +1059,11 @@ private : NodeSeq nodes;
         EdgeIte ei;
         bool dir;
         bool pond;
+        vector<vector<GE>> matrixFloydW;
+        vector<vector<GV>> matrixFloydPath;
+        bool stateFloyd;
+        int indiceAStar;
+        unordered_map<GV,int> dictAStar;
 };
 
 template <typename GV,typename GE>
