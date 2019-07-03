@@ -8,7 +8,7 @@ using namespace std;
 int main() {
 
 
-  Graph<char,int> g(false,true);
+  Graph<int,int> g(false,true);
   string file;
 
   std::cout <<"Ingresa nombre de file::\n";
@@ -16,7 +16,7 @@ int main() {
   g.readFile(file);
   g.print();
   cout << "Prim" << endl;
-  g.prim('a');
+  g.prim(1);
 
   cout << "Kruskal" << endl;
   g.kruskal();
@@ -24,15 +24,16 @@ int main() {
   //cout<<g.bipartiteGraph()<<endl;
   //g.print();
 
-  auto dijkstra = g.dijkstra('a');
+  auto dijkstra = g.dijkstra(1);
    cout << "Dikjstra" << endl;
   dijkstra.print();
   dijkstra.writeOn("dijkstra.txt");
 
-  auto bellman =  g.BellmanFord('a');
+  auto bellman =  g.BellmanFord(1);
   bellman->print();
   bellman->writeOn("bellmanford.txt");
 
+  auto myFloyd = g.floydwarshall();
 
 
   //auto resultado = g.DFS(2);
