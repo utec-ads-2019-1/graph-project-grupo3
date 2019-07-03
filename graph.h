@@ -496,37 +496,9 @@ class Graph {
           stateFloyd=true;
           return matrixFloydW;
         }
-        void printMatrixFloydWarshallPath(){
-          int i,j;
-          cout<<"\t";
-            for(i=0;i<size;i++)
-              cout<<nodes[i]->getData()<<"\t";
-            cout<<endl;
-            for(i=0;i<size;i++){
-              cout<<nodes[i]->getData()<<"\t";
-              for(j=0;j<size;j++){
-                  cout<<matrixFloydPath[i][j]<<"\t";
-              }
-              cout<<endl;
-            }
-        }
-        void printMatrixFloydWarshall(){
-          int i,j;
-          cout<<"\t";
-            for(i=0;i<size;i++)
-              cout<<nodes[i]->getData()<<"\t";
-            cout<<endl;
-            for(i=0;i<size;i++){
-              cout<<nodes[i]->getData()<<"\t";
-              for(j=0;j<size;j++){
-                if(matrixFloydW[i][j]==(1<<30))
-                  cout<<"INF\t";
-                else
-                  cout<<matrixFloydW[i][j]<<"\t";
-              }
-              cout<<endl;
-            }
-        }
+
+
+
 /*
         void aStar(){
           if(stateFloyd)
@@ -559,9 +531,7 @@ class Graph {
             pthread_join(workers[i],NULL);
 
         }*/
-        GE pitagoras(node* n1,node* n2){
-          return sqrt(pow(n1->getX()-n2->getX(),2)+pow(n1->getY()-n2->getY(),2));
-        }
+
         void *jobAStar(void* p){
 
           pair<int,int>*varp=(pair<int,int>*)p;
@@ -651,12 +621,6 @@ class Graph {
           }
         }
 
-        double calcDensity(bool dir){
-            double resultado=0;
-            if (!dir) resultado = double((edges.size()*2))/double(nodes.size()*(nodes.size()-1));
-            else resultado = double(edges.size())/double(nodes.size()*(nodes.size()-1));
-            return resultado;
-        }
 
         void density(){ //Controlar que esté en el rango de 0<a<1
             double cuota;
@@ -669,46 +633,7 @@ class Graph {
             cout <<"===========================================================\n";
         }
 
-        void type(node *nodo){ // Hundido o Fuente
-            if (degreInNode(nodo)==0)
-                cout << "Fuente ";
-            else if(degreOutNode(nodo)==0)
-                cout <<"Hundido ";
-            else
-                cout << "Normal ";
-        }
 
-
-        int degreOutNode(node *nodo){
-            if(dir){
-                int degree = 0;
-                 typename dictEdges::iterator it;
-                 it = dictE.begin();
-                 while(it != dictE.end()){ //typedef map<pair<GV,GV>,bool> dictEdges;
-                     if((*it).second && (((*it).first).first == nodo->getData()) ){
-                         degree++;
-                     }
-                     it++;
-                 }
-                return degree;
-            }else
-                return nodo->getCountNodesAdj();
-        }
-        int degreInNode(node* nodo){
-            if(dir){
-                int degree = 0;
-                typename dictEdges::iterator it;
-                it = dictE.begin();
-                while(it != dictE.end()){ //typedef map<pair<GV,GV>,bool> dictEdges;
-                    if((*it).second && (((*it).first).second == nodo->getData()) ){
-                        degree++;
-                    }
-                    it++;
-                }
-                return degree;
-            }else
-            return nodo->getCountNodesAdj();
-        }
 
     Graph kruskal() { //Pasar como grafo
       cout<<"Encontro a kruskal\n";
@@ -763,16 +688,6 @@ class Graph {
                 throw out_of_range("El algoritmo de Kruskal no funciona para grafos dirigidos");
             }
 
-        NodeSet difference (NodeSet first, NodeSet second){
-            NodeSet result;
-            auto it = first.begin();
-            while(it!=first.end()){
-                if (second.find(*it) == second.end())
-                    result.insert(*it);
-                it++;
-            }
-            return result;
-        }
 
         Graph prim(GV etiqueta){
 
@@ -975,12 +890,6 @@ class Graph {
         }
 
 
-        node* getNode(GV value){
-          if(dict[value])
-            return dict[value];
-          return nullptr;
-        }
-
         void writeOn(string nameOf)
         {
           ofstream File;
@@ -1079,6 +988,107 @@ private : NodeSeq nodes;
         bool stateFloyd;
         int indiceAStar;
         unordered_map<GV,int> dictAStar;
+
+protected:
+
+    void type(node *nodo){ // Hundido o Fuente
+        if (degreInNode(nodo)==0)
+            cout << "Fuente ";
+        else if(degreOutNode(nodo)==0)
+            cout <<"Hundido ";
+        else
+            cout << "Normal ";
+    }
+
+
+    int degreOutNode(node *nodo){
+        if(dir){
+            int degree = 0;
+            typename dictEdges::iterator it;
+            it = dictE.begin();
+            while(it != dictE.end()){ //typedef map<pair<GV,GV>,bool> dictEdges;
+                if((*it).second && (((*it).first).first == nodo->getData()) ){
+                    degree++;
+                }
+                it++;
+            }
+            return degree;
+        }else
+            return nodo->getCountNodesAdj();
+    }
+    int degreInNode(node* nodo){
+        if(dir){
+            int degree = 0;
+            typename dictEdges::iterator it;
+            it = dictE.begin();
+            while(it != dictE.end()){ //typedef map<pair<GV,GV>,bool> dictEdges;
+                if((*it).second && (((*it).first).second == nodo->getData()) ){
+                    degree++;
+                }
+                it++;
+            }
+            return degree;
+        }else
+            return nodo->getCountNodesAdj();
+    }
+
+    GE pitagoras(node* n1,node* n2){
+        return sqrt(pow(n1->getX()-n2->getX(),2)+pow(n1->getY()-n2->getY(),2));
+    }
+
+    void printMatrixFloydWarshallPath(){
+        int i,j;
+        cout<<"\t";
+        for(i=0;i<size;i++)
+            cout<<nodes[i]->getData()<<"\t";
+        cout<<endl;
+        for(i=0;i<size;i++){
+            cout<<nodes[i]->getData()<<"\t";
+            for(j=0;j<size;j++){
+                cout<<matrixFloydPath[i][j]<<"\t";
+            }
+            cout<<endl;
+        }
+    }
+    void printMatrixFloydWarshall(){
+        int i,j;
+        cout<<"\t";
+        for(i=0;i<size;i++)
+            cout<<nodes[i]->getData()<<"\t";
+        cout<<endl;
+        for(i=0;i<size;i++){
+            cout<<nodes[i]->getData()<<"\t";
+            for(j=0;j<size;j++){
+                if(matrixFloydW[i][j]==(1<<30))
+                    cout<<"INF\t";
+                else
+                    cout<<matrixFloydW[i][j]<<"\t";
+            }
+            cout<<endl;
+        }
+    }
+    node* getNode(GV value){
+        if(dict[value])
+            return dict[value];
+        return nullptr;
+    }
+
+    NodeSet difference (NodeSet first, NodeSet second){
+        NodeSet result;
+        auto it = first.begin();
+        while(it!=first.end()){
+            if (second.find(*it) == second.end())
+                result.insert(*it);
+            it++;
+        }
+        return result;
+    }
+    double calcDensity(bool dir){
+        double resultado=0;
+        if (!dir) resultado = double((edges.size()*2))/double(nodes.size()*(nodes.size()-1));
+        else resultado = double(edges.size())/double(nodes.size()*(nodes.size()-1));
+        return resultado;
+    }
 };
 
 template <typename GV,typename GE>
